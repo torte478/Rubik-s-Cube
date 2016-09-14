@@ -2,6 +2,7 @@ namespace MagicCube
 {
 	public enum Turn
 	{
-		Right
+		Right,
+		Left
 	}
 }

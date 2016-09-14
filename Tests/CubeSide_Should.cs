@@ -39,13 +39,21 @@ namespace Tests
 		}
 
 		[Test]
+		public void ProvideAccess_ToColors()
+		{
+			var cubeSide = new CubeSide(CellColor.Orange);
+
+			cubeSide.Colors[4] = CellColor.Blue;
+		}
+
+		[Test]
 		public void FillSide_ByOneColor()
 		{
 			const CellColor sideColor = CellColor.Green;
 
 			var cubeSide = new CubeSide(sideColor);
 
-			Assert.That(cubeSide.All(color => color == sideColor), Is.True);
+			Assert.That(cubeSide.Colors.All(color => color == sideColor), Is.True);
 		}
 
 		[Test]
@@ -56,7 +64,7 @@ namespace Tests
 
 			var anotherSide = new CubeSide(side);
 
-			Assert.That(anotherSide.All(color => color == sideColor), Is.True);
+			Assert.That(anotherSide.Colors.All(color => color == sideColor), Is.True);
 		}
 
 		[Test]
@@ -65,6 +73,24 @@ namespace Tests
 			var side = new CubeSide(CellColor.White) {[5] = CellColor.Green};
 
 			Assert.That(side[5], Is.EqualTo(CellColor.Green));
+		}
+
+		[Test]
+		public void ThrowOutOfRangeException_IfColorsCountNotEqualto9()
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() =>
+			{
+				// ReSharper disable once UnusedVariable
+				var side = new CubeSide(new[] {CellColor.White, CellColor.White});
+			});
+		}
+
+		[Test]
+		public void HaveNineColors_AfterOneColorFill()
+		{
+			var side = new CubeSide(CellColor.Red);
+
+			Assert.That(side.Colors.Count, Is.EqualTo(9));
 		}
 	}
 }

@@ -31,15 +31,23 @@ namespace Tests
 		[TestCase(Side.Left, CellColor.Red)]
 		public void HaveCorrectSide_AfterInitialization(Side side, CellColor sideColor)
 		{
-			Assert.That(cube[side].All(c => c == sideColor), Is.True);
+			Assert.That(cube[side].Colors.All(c => c == sideColor), Is.True);
 		}
 
-		//[Test]
-		//public void CorrectChangeSides_AfterTurnToRight()
-		//{
-		//    var nextState = cube.Turn(Turn.Right, 1);
+		[Test]
+		public void CorrectChangeSides_AfterTurnToLeftFirstLayer()
+		{
+			var expectedColors = Enumerable
+				.Range(1, 3)
+				.Select(i => CellColor.Orange)
+				.Concat(Enumerable
+					.Range(1, 6)
+					.Select(i => CellColor.Green))
+				.ToArray();
 
-		//    Assert.That(nextState[Side.Front][2], Is.EqualTo(CellColor.Orange));
-		//}
+			var nextState = cube.Turn(Turn.Left, 1);
+
+			Assert.That(nextState[Side.Front].Colors, Is.EqualTo(expectedColors));
+		}
 	}
 }

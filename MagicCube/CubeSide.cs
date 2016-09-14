@@ -1,76 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 
 namespace MagicCube
 {
-	public class CubeSide : IEnumerable<CellColor>, IEnumerator<CellColor>
+	public class CubeSide
 	{
-		private readonly CellColor[] colors;
-		private int index;
+		public CellColor[] Colors { get; }
 
 		public CubeSide(CellColor[] colors)
 		{
-			this.colors = colors;
+			if (colors.Length != 9)
+				throw new ArgumentOutOfRangeException(nameof(colors));
+
+			Colors = colors;
 		}
 
 		public CubeSide(CellColor sideColor)
 		{
-			colors = Enumerable
-				.Range(1, 8)
+			Colors = Enumerable
+				.Range(1, 9)
 				.Select(i => sideColor)
 				.ToArray();
 		}
 
 		public CubeSide(CubeSide sideColor)
 		{
-			colors = (CellColor[])sideColor.colors.Clone();
+			Colors = (CellColor[])sideColor.Colors.Clone();
 		}
 
 		public CellColor this[int i]
 		{
-			get { return colors[i]; }
-			set { colors[i] = value; }
+			get { return Colors[i]; }
+			set { Colors[i] = value; }
 		}
-
-		#region IEnumerable<T
-
-		public IEnumerator<CellColor> GetEnumerator()
-		{
-			return this;
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		public void Dispose()
-		{
-			//ignore
-		}
-
-		public bool MoveNext()
-		{
-			if (index == colors.Length - 1)
-			{
-				Reset();
-				return false;
-			}
-
-			++index;
-			return true;
-		}
-
-		public void Reset()
-		{
-			index = -1;
-		}
-
-		public CellColor Current => colors[index];
-
-		object IEnumerator.Current => Current;
-
-		#endregion IEnumerable<T>
 	}
 }
