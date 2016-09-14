@@ -35,19 +35,94 @@ namespace Tests
 		}
 
 		[Test]
-		public void CorrectChangeSides_AfterTurnToLeftFirstLayer()
+		public void ChangeSides_AfterTurnToLeftFirstLayer()
 		{
-			var expectedColors = Enumerable
-				.Range(1, 3)
-				.Select(i => CellColor.Orange)
-				.Concat(Enumerable
-					.Range(1, 6)
-					.Select(i => CellColor.Green))
-				.ToArray();
+			var expectedColors = new[]
+			{
+				CellColor.Orange, CellColor.Orange, CellColor.Orange,
+				CellColor.Green, CellColor.Green, CellColor.Green,
+				CellColor.Green, CellColor.Green, CellColor.Green
+			};
 
-			var nextState = cube.Turn(Turn.Left, 1);
+			var nextState = cube.MakeTurn(TurnTo.Left, Layer.First);
 
 			Assert.That(nextState[Side.Front].Colors, Is.EqualTo(expectedColors));
+		}
+
+		[Test]
+		public void ChangeSides_AfterTurnToLeftThirdLayer()
+		{
+			var expectedColors = new[]
+			{
+				CellColor.Green, CellColor.Green, CellColor.Green,
+				CellColor.Green, CellColor.Green, CellColor.Green,
+				CellColor.Orange, CellColor.Orange, CellColor.Orange,
+			};
+
+			var nextState = cube.MakeTurn(TurnTo.Left, Layer.Third);
+
+			Assert.That(nextState[Side.Front].Colors, Is.EqualTo(expectedColors));
+		}
+
+		[Test]
+		public void ChangeSides_AfterTurnToRightSecondLayer()
+		{
+			var expectedColors = new[]
+			{
+				CellColor.Green, CellColor.Green, CellColor.Green,
+				CellColor.Red, CellColor.Red, CellColor.Red,
+				CellColor.Green, CellColor.Green, CellColor.Green
+			};
+
+			var nextState = cube.MakeTurn(TurnTo.Right, Layer.Second);
+
+			Assert.That(nextState[Side.Front].Colors, Is.EqualTo(expectedColors));
+		}
+
+		[Test]
+		public void ChangeSides_AfterTurnToUpFirstLayer()
+		{
+			var expectedColors = new[]
+			{
+				CellColor.Green, CellColor.White, CellColor.White,
+				CellColor.Green, CellColor.White, CellColor.White,
+				CellColor.Green, CellColor.White, CellColor.White,
+			};
+
+			var nextState = cube.MakeTurn(TurnTo.Up, Layer.First);
+
+			Assert.That(nextState[Side.Top].Colors, Is.EqualTo(expectedColors));
+		}
+
+		[Test]
+		public void ChangeSides_AfterTurnToDownSecondLayer()
+		{
+			var expectedColors = new[]
+			{
+				CellColor.Blue, CellColor.Green, CellColor.Blue,
+				CellColor.Blue, CellColor.Green, CellColor.Blue,
+				CellColor.Blue, CellColor.Green, CellColor.Blue,
+			};
+
+			var nextState = cube.MakeTurn(TurnTo.Down, Layer.Second);
+
+			Assert.That(nextState[Side.Down].Colors, Is.EqualTo(expectedColors));
+		}
+
+		[Test]
+		public void MoveToStartState_AfterFourEqualTurns()
+		{
+			var startState = cube
+				.MakeTurn(TurnTo.Left, Layer.First)
+				.MakeTurn(TurnTo.Right, Layer.Third);
+
+			var finishState = startState
+				.MakeTurn(TurnTo.Up, Layer.First)
+				.MakeTurn(TurnTo.Up, Layer.First)
+				.MakeTurn(TurnTo.Up, Layer.First)
+				.MakeTurn(TurnTo.Up, Layer.First);
+
+			Assert.That(finishState[Side.Front].Colors, Is.EqualTo(finishState[Side.Front].Colors));
 		}
 	}
 }

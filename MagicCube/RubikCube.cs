@@ -21,25 +21,62 @@ namespace MagicCube
 
 		public CubeSide this[Side side] => new CubeSide(sides[(int)side]);
 
-		public RubikCube Turn(Turn right, int i)
+		public RubikCube MakeTurn(TurnTo turn, Layer layer)
 		{
-			var newSides = new[] {Side.Front, Side.Left, Side.Back, Side.Right};
-			var newStateSides = newSides.Select(side => this[side]).ToArray();
+			if (turn == TurnTo.Left || turn == TurnTo.Right)
+				return MakeHorizontalTurn(turn, layer);
+			else
+				return MakeVerticalTurn(turn, layer);
+		}
 
-			for (var sideIndex = 0; sideIndex < 4; ++sideIndex)
+		private RubikCube MakeHorizontalTurn(TurnTo turn, Layer layer)
+		{
+			var changedSidesIndices = new[] { Side.Front, Side.Left, Side.Back, Side.Right };
+			var changedSides = changedSidesIndices.Select(side => this[side]).ToArray();
+			var startCell = (int)layer * 3;
+			var turnDirection = turn == TurnTo.Left ? -1 : 1;
+
+			for (var sideIndex = 0; sideIndex < changedSidesIndices.Length; ++sideIndex)
 			{
-				var oldSide = this[newSides[(sideIndex + 3)%4]];
-				for (var cell = 0; cell < 3; ++cell)
-					newStateSides[sideIndex][cell] = oldSide[cell];
+				var oldSideIndex = (sideIndex + turnDirection + 4) % changedSidesIndices.Length;
+				var oldSide = this[changedSidesIndices[oldSideIndex]];
+
+				for (var i = 0; i < 3; ++i)
+					changedSides[sideIndex][startCell + i] = oldSide[startCell + i];
 			}
 
 			return new RubikCube(
-				newStateSides[0],
+				changedSides[0],
 				this[Side.Top],
-				newStateSides[3],
-				newStateSides[2],
+				changedSides[3],
+				changedSides[2],
 				this[Side.Down],
-				newStateSides[1]);
+				changedSides[1]);
+		}
+
+		private RubikCube MakeVerticalTurn(TurnTo turn, Layer layer)
+		{
+			var changedSidesIndices = new[] { Side.Front, Side.Top, Side.Back, Side.Down };
+			var changedSides = changedSidesIndices.Select(side => this[side]).ToArray();
+			var startCell = (int)layer;
+			var turnDirection = turn == TurnTo.Up ? -1 : 1;
+
+			for (var sideIndex = 0; sideIndex < changedSidesIndices.Length; ++sideIndex)
+			{
+				var oldSideIndex = (sideIndex + turnDirection + 4) % changedSidesIndices.Length;
+				var oldSide = this[changedSidesIndices[oldSideIndex]];
+
+				for (var i = 0; i < 3; ++i)
+					changedSides[sideIndex][startCell + i * 3] = oldSide[startCell + i * 3];
+			}
+
+			return new RubikCube(
+				changedSides[0],
+				changedSides[1],
+				this[Side.Right],
+				changedSides[2],
+				changedSides[3],
+				this[Side.Left]);
 		}
 	}
 }
