@@ -33,5 +33,25 @@ namespace MagicCube
 			get { return Colors[i]; }
 			set { Colors[i] = value; }
 		}
+
+		public CellColor GetColor(int row, int column)
+		{
+			return Colors[ConvertToIndex(row, column)];
+		}
+
+		public void SetColor(CellColor color, int row, int column)
+		{
+			Colors[ConvertToIndex(row, column)] = color;
+		}
+
+		private static int ConvertToIndex(int row, int column)
+		{
+			if (row < 1 || row > 3)
+				throw new ArgumentOutOfRangeException(nameof(row));
+			if (column < 1 || column > 3)
+				throw new ArgumentOutOfRangeException(nameof(column));
+
+			return (row - 1) * 3 + (column - 1);
+		}
 	}
 }
