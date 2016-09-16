@@ -109,6 +109,28 @@ namespace Tests
 			Assert.That(nextState[side].GetColor(1, 3), Is.EqualTo(color));
 		}
 
+		[Test]
+		public void CycleShiftSides_AfterRollToUp()
+		{
+			var nextState = cube.MakeRollTurn(TurnTo.Up);
+
+			Assert.That(nextState[Side.Front].Colors.All(color => color == CellColor.Blue),
+				Is.True);
+		}
+
+		[Test]
+		public void CorrectHandleBackSide_AfterRollToDown()
+		{
+			const CellColor color = CellColor.Red;
+			var newBackSide = cube.CloneSide(Side.Back);
+			newBackSide.SetColor(color, 1, 1);
+			var newCube = new RubikCube(frontSide, topSide, rightSide, newBackSide, downSide, leftSide);
+
+			var nextState = newCube.MakeRollTurn(TurnTo.Down);
+
+			Assert.That(nextState[Side.Top].GetColor(3, 3), Is.EqualTo(color));
+		}
+
 		#endregion RollTests
 
 		#region TurnTests

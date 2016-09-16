@@ -128,5 +128,45 @@ namespace Tests
 				cubeSide.SetColor(CellColor.Blue, -4, 10);
 			});
 		}
+
+		[Test]
+		public void MoveColors_AfterClockwiseTurn()
+		{
+			var side = new CubeSide(new[]
+			{
+				CellColor.White, CellColor.Red, CellColor.Green, 
+				CellColor.Blue, CellColor.Orange, CellColor.Yellow,
+				CellColor.Red, CellColor.Blue, CellColor.Green
+			});
+
+			side.MakeClockwiseTurn(true);
+
+			Assert.That(side.Colors, Is.EqualTo(new[]
+			{
+				CellColor.Red, CellColor.Blue, CellColor.White, 
+				CellColor.Blue, CellColor.Orange, CellColor.Red, 
+				CellColor.Green, CellColor.Yellow, CellColor.Green
+			}));
+		}
+
+		[Test]
+		public void MoveColors_AfterNotClockwiseTurn()
+		{
+			var side = new CubeSide(new[]
+			{
+				CellColor.White, CellColor.Red, CellColor.Green,
+				CellColor.Blue, CellColor.Orange, CellColor.Yellow,
+				CellColor.Red, CellColor.Blue, CellColor.Green
+			});
+
+			side.MakeClockwiseTurn(false);
+
+			Assert.That(side.Colors, Is.EqualTo(new[]
+			{
+				CellColor.Green, CellColor.Yellow, CellColor.Green, 
+				CellColor.Red, CellColor.Orange, CellColor.Blue, 
+				CellColor.White, CellColor.Blue, CellColor.Red, 
+			}));
+		}
 	}
 }

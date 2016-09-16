@@ -5,6 +5,7 @@ namespace MagicCube
 	public class RubikCube
 	{
 		private static readonly Side[] changedOnHorizontalTurnSides = { Side.Front, Side.Left, Side.Back, Side.Right };
+		private static readonly Side[] changedOnVerticalTurnSides = {Side.Front, Side.Top, Side.Back, Side.Down};
 
 		private readonly CubeSide[] sides;
 
@@ -23,17 +24,22 @@ namespace MagicCube
 
 		public CubeSide this[Side side] => sides[(int)side];
 
+		public CubeSide CloneSide(Side side)
+		{
+			return new CubeSide(this[side]);
+		}
+
+		public CellColor GetColor(Side side, int row, int column)
+		{
+			return this[side].GetColor(row, column);
+		}
+
 		public RubikCube MakeTurn(TurnTo turn, Layer layer)
 		{
 			if (turn == TurnTo.Left || turn == TurnTo.Right)
 				return MakeHorizontalTurn(turn, layer);
 			else
 				return MakeVerticalTurn(turn, layer);
-		}
-
-		public CubeSide CloneSide(Side side)
-		{
-			return new CubeSide(this[side]);
 		}
 
 		private RubikCube MakeHorizontalTurn(TurnTo turn, Layer layer)
@@ -88,52 +94,63 @@ namespace MagicCube
 
 		public RubikCube MakeRollTurn(TurnTo turnTo)
 		{
-			var newWallSides = CycleShiftWallSides(turnTo);
-			var isClockwistTurnForTopSide = turnTo == TurnTo.Left;
+			return turnTo == TurnTo.Right || turnTo == TurnTo.Left 
+				? MakeHorizontalTurn(turnTo) 
+				: MakeVerticalTurn(turnTo);
+		}
+
+		private RubikCube MakeHorizontalTurn(TurnTo turnTo)
+		{
+			var isClockwiseForTop = turnTo == TurnTo.Left;
+			
+			return new RubikCube(
+				GetShiftedSide(Side.Front, turnTo),
+				GetClockwiseTurnedSide(Side.Top, isClockwiseForTop),
+				GetShiftedSide(Side.Right, turnTo),
+				GetShiftedSide(Side.Back, turnTo),
+				GetClockwiseTurnedSide(Side.Down, !isClockwiseForTop),
+				GetShiftedSide(Side.Left, turnTo));
+		}
+
+		private RubikCube MakeVerticalTurn(TurnTo turnTo)
+		{
+			var isClockWiseForRight = turnTo == TurnTo.Up;
 
 			return new RubikCube(
-				newWallSides[0],
-				GetClockwiseTurnedSide(Side.Top, isClockwistTurnForTopSide),
-				newWallSides[3],
-				newWallSides[2],
-				GetClockwiseTurnedSide(Side.Down, !isClockwistTurnForTopSide),
-				newWallSides[1]);
+				GetShiftedSide(Side.Front, turnTo),
+				GetShiftedSide(Side.Top, turnTo),
+				GetClockwiseTurnedSide(Side.Right, isClockWiseForRight),
+				GetShiftedSide(Side.Back, turnTo),
+				GetShiftedSide(Side.Down, turnTo),
+				GetClockwiseTurnedSide(Side.Left, !isClockWiseForRight));
 		}
 
-		private CubeSide[] CycleShiftWallSides(TurnTo turnTo)
+		private CubeSide GetShiftedSide(Side side, TurnTo turnTo)
 		{
-			var changedSides = changedOnHorizontalTurnSides.Select(CloneSide).ToArray();
+			var changedSides =
+				turnTo == TurnTo.Left || turnTo == TurnTo.Right
+					? changedOnHorizontalTurnSides
+					: changedOnVerticalTurnSides;
 
-			var shiftParameter = turnTo == TurnTo.Right ? 1 : 3;
-			var newSides = changedSides
-				.Skip(shiftParameter)
-				.Concat(changedSides.Take(shiftParameter))
-				.ToArray();
+			var shiftFactor =
+				turnTo == TurnTo.Right || turnTo == TurnTo.Down
+					? 1
+					: -1;
 
-			return newSides;
+			var currentSideIndex = 0;
+			while (changedSides[currentSideIndex] != side)
+				++currentSideIndex;
+
+			var newSideIndex = (shiftFactor + currentSideIndex + 4) % 4;
+
+			return CloneSide(changedSides[newSideIndex]);
 		}
 
-		private CubeSide GetClockwiseTurnedSide(Side side, bool isClockWise)
+		private CubeSide GetClockwiseTurnedSide(Side side, bool isClockwise)
 		{
 			var newSide = CloneSide(side);
-			
-			for (var i = 1; i < 3; ++i)
-				for (var j = 1; j <= 3; ++j)
-				{
-					var color = this[side].GetColor(i, j);
-					newSide.SetColor(
-						color, 
-						isClockWise ? j : 4 - j,
-						isClockWise ? 4 - i : i);
-				}
-
+			newSide.MakeClockwiseTurn(isClockwise);
 			return newSide;
-		}
-
-		public CellColor GetColor(Side side, int row, int column)
-		{
-			return this[side].GetColor(row, column);
-
 		}
 	}
 }
