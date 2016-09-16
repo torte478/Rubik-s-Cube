@@ -101,17 +101,53 @@ namespace Tests
 				Is.True);
 		}
 
-//		[Test]
-//		public void MakeTurnOfTop_AfterRollToRight()
-//		{
-//			var newTopSide = cube.CloneSide(Side.Top);
-//			newTopSide.Colors[0] = CellColor.Red;
-//			var newCube = new RubikCube(frontSide, newTopSide, rightSide, backSide, downSide, leftSide);
-//
-//			var nextState = newCube.MakeRollTurn(TurnTo.Right);
-//
-//			Assert.That(nextState[Side.Top].Colors[6], Is.EqualTo(CellColor.Red));
-//		}
+		[Test]
+		public void MakeTurnOfTop_AfterRollToRight()
+		{
+			const CellColor color = CellColor.Red;
+			var newTopSide = cube.CloneSide(Side.Top);
+			newTopSide.SetColor(color, 1, 1);
+			var newCube = new RubikCube(frontSide, newTopSide, rightSide, backSide, downSide, leftSide);
+
+			var nextState = newCube.MakeRollTurn(TurnTo.Right);
+
+			Assert.That(nextState[Side.Top].GetColor(3, 1), Is.EqualTo(color));
+		}
+
+		[Test]
+		public void ChangeSides_AfterRollToLeft()
+		{
+			var nextState = cube.MakeRollTurn(TurnTo.Left);
+
+			Assert.That(nextState[Side.Front].Colors.All(color => color == CellColor.Orange),
+				Is.True);
+		}
+
+		[Test]
+		public void MakeTurnOfDown_AfterRollToRight()
+		{
+			const CellColor color = CellColor.Green;
+			var newDownSide = cube.CloneSide(Side.Down);
+			newDownSide.SetColor(color, 1, 1);
+			var newCube = new RubikCube(frontSide, topSide, rightSide, backSide, newDownSide, leftSide);
+
+			var nextState = newCube.MakeRollTurn(TurnTo.Right);
+
+			Assert.That(nextState[Side.Down].GetColor(1, 3), Is.EqualTo(color));
+		}
+
+		[Test]
+		public void MakeTurnOfTop_AfterRollToLeft()
+		{
+			const CellColor color = CellColor.Yellow;
+			var newTopSide = cube.CloneSide(Side.Top);
+			newTopSide.SetColor(color, 1, 1);
+			var newCube = new RubikCube(frontSide, newTopSide, rightSide, backSide, downSide, leftSide);
+
+			var nextState = newCube.MakeRollTurn(TurnTo.Right);
+
+			Assert.That(nextState[Side.Top].GetColor(1, 3), Is.EqualTo(color));
+		}
 
 		[Test]
 		public void GetColor_ByTwoIndices()

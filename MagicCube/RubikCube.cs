@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace MagicCube
 {
 	public class RubikCube
 	{
+		private static readonly Side[] changedOnHorizontalTurnSides = { Side.Front, Side.Left, Side.Back, Side.Right };
+
 		private readonly CubeSide[] sides;
 
 		public RubikCube(CubeSide frontSide, CubeSide topSide, CubeSide rightSide, CubeSide backSide, CubeSide downSide, CubeSide leftSide)
@@ -85,26 +86,54 @@ namespace MagicCube
 				this[Side.Left]);
 		}
 
-		public RubikCube MakeRollTurn(TurnTo right)
+		public RubikCube MakeRollTurn(TurnTo turnTo)
 		{
-			var newTopSide = CloneSide(Side.Top);
-
-			for (var i = 0; i < 3; ++i)
-				for (var j = 0; j < 3; ++j)
-					newTopSide[i*3 + j] = this[Side.Top][(2 - j % 3) * 3 + i];
+			var newSides = CycleShiftSides(turnTo);
+			var isClockwistTurn = turnTo == TurnTo.Right;
 
 			return new RubikCube(
-				this[Side.Left],
-				newTopSide,
-				this[Side.Front],
-				this[Side.Right],
-				this[Side.Down],
-				this[Side.Back]);
+				newSides[0],
+				GetClockwiseTurnedSide(Side.Top, !isClockwistTurn),
+				newSides[3],
+				newSides[2],
+				GetClockwiseTurnedSide(Side.Down, isClockwistTurn),
+				newSides[1]);
+		}
+
+		private CubeSide[] CycleShiftSides(TurnTo turnTo)
+		{
+			var changedSides = changedOnHorizontalTurnSides.Select(CloneSide).ToArray();
+
+			var shiftParameter = turnTo == TurnTo.Right ? 1 : 3;
+			var newSides = changedSides
+				.Skip(shiftParameter)
+				.Concat(changedSides.Take(shiftParameter))
+				.ToArray();
+
+			return newSides;
+		}
+
+		private CubeSide GetClockwiseTurnedSide(Side side, bool isClockWise)
+		{
+			var newSide = CloneSide(side);
+			
+			for (var i = 1; i < 3; ++i)
+				for (var j = 1; j <= 3; ++j)
+				{
+					var color = this[side].GetColor(i, j);
+					newSide.SetColor(
+						color, 
+						isClockWise ? 4 - j : j,
+						isClockWise ? i : 4 - i);
+				}
+
+			return newSide;
 		}
 
 		public CellColor GetColor(Side side, int row, int column)
 		{
 			return this[side].GetColor(row, column);
+
 		}
 	}
 }
