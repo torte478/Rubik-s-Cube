@@ -91,13 +91,53 @@ namespace Tests
 		}
 
 		[Test]
-		public void CorrectHandleBackSide_AfterRollToDown()
+		public void CorrectChangeTopSide_AfterRollToDown()
 		{
 			var testCube = CreateCubeWithConcreteCell(Side.Back, 1, 1, CellColor.Red);
 
 			var nextCube = testCube.MakeRollTurn(TurnTo.Down);
 
 			Assert.That(nextCube[Side.Top].GetColor(3, 3), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void CorrectChangeBackSide_AfterRollToUp()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Top, 1, 2, CellColor.Red);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Up);
+
+			Assert.That(nextCube[Side.Back].GetColor(3, 2), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void CorrectChangeDownSide_AfterRollToUp()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Back, 2, 3, CellColor.Red);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Up);
+
+			Assert.That(nextCube[Side.Down].GetColor(2, 1), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void NotTurnTopSide_AfterRollToUp()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Front, 1, 3, CellColor.Red);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Up);
+
+			Assert.That(nextCube[Side.Top].GetColor(1, 3), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void NotTurnDownSide_AfterRollToDown()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Front, 1, 1, CellColor.Red);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Down);
+
+			Assert.That(nextCube[Side.Down].GetColor(1, 1), Is.EqualTo(CellColor.Red));
 		}
 
 		private RubikCube CreateCubeWithConcreteCell(Side side, int row, int column, CellColor color)

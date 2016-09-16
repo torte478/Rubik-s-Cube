@@ -9,28 +9,20 @@ namespace Tests
 	internal class CubeSide_Should
 	{
 		private CubeSide cubeSide;
+		private CubeSide complexCubeSide;
 
 		[SetUp]
 		public void SetUp()
 		{
 			cubeSide = new CubeSide(CellColor.White);
+			complexCubeSide = new CubeSide(new[]
+			{
+				CellColor.White, CellColor.Red, CellColor.Green,
+				CellColor.Blue, CellColor.Orange, CellColor.Yellow,
+				CellColor.Red, CellColor.Blue, CellColor.Green
+			});
 		}
-
-		[Test]
-		public void ReturnColor_ByIndex()
-		{
-			CellColor[] colors = {
-				CellColor.Yellow, CellColor.Yellow, CellColor.Orange,
-				CellColor.Yellow, CellColor.Red, CellColor.Blue,
-				CellColor.Green, CellColor.Red, CellColor.Orange
-			};
-
-			var side = new CubeSide(colors);
-
-			for (var i = 0; i < colors.Length; ++i)
-				Assert.That(side[i], Is.EqualTo(colors[i]));
-		}
-
+		
 		[Test]
 		[TestCase(-1)]
 		[TestCase(12)]
@@ -132,16 +124,9 @@ namespace Tests
 		[Test]
 		public void MoveColors_AfterClockwiseTurn()
 		{
-			var side = new CubeSide(new[]
-			{
-				CellColor.White, CellColor.Red, CellColor.Green, 
-				CellColor.Blue, CellColor.Orange, CellColor.Yellow,
-				CellColor.Red, CellColor.Blue, CellColor.Green
-			});
+			complexCubeSide.MakeClockwiseTurn();
 
-			side.MakeClockwiseTurn(true);
-
-			Assert.That(side.Colors, Is.EqualTo(new[]
+			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
 			{
 				CellColor.Red, CellColor.Blue, CellColor.White, 
 				CellColor.Blue, CellColor.Orange, CellColor.Red, 
@@ -152,20 +137,34 @@ namespace Tests
 		[Test]
 		public void MoveColors_AfterNotClockwiseTurn()
 		{
-			var side = new CubeSide(new[]
-			{
-				CellColor.White, CellColor.Red, CellColor.Green,
-				CellColor.Blue, CellColor.Orange, CellColor.Yellow,
-				CellColor.Red, CellColor.Blue, CellColor.Green
-			});
+			complexCubeSide.MakeClockwiseTurn(false);
 
-			side.MakeClockwiseTurn(false);
-
-			Assert.That(side.Colors, Is.EqualTo(new[]
+			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
 			{
 				CellColor.Green, CellColor.Yellow, CellColor.Green, 
 				CellColor.Red, CellColor.Orange, CellColor.Blue, 
 				CellColor.White, CellColor.Blue, CellColor.Red, 
+			}));
+		}
+
+		[Test]
+		public void ReturnReferenceToThis_FromClockwiseMethod()
+		{
+			var currentSide = complexCubeSide.MakeClockwiseTurn();
+
+			Assert.That(currentSide.Colors, Is.EqualTo(complexCubeSide.Colors));
+		}
+
+		[Test]
+		public void ChangeColors_AfterTwiceClockwiceTurn()
+		{
+			complexCubeSide.MakeTwiceTurn();
+
+			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
+			{
+				CellColor.Green, CellColor.Blue, CellColor.Red, 
+				CellColor.Yellow, CellColor.Orange, CellColor.Blue, 
+				CellColor.Green, CellColor.Red, CellColor.White
 			}));
 		}
 	}

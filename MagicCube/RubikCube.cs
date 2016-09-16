@@ -116,26 +116,34 @@ namespace MagicCube
 		{
 			var isClockWiseForRight = turnTo == TurnTo.Up;
 
+			var newBackSide = GetShiftedSide(Side.Back, turnTo);
+			var newTopSide = GetShiftedSide(Side.Top, turnTo);
+			var newDownSide = GetShiftedSide(Side.Down, turnTo);
+
+			newBackSide.MakeTwiceTurn();
+			if (turnTo == TurnTo.Down)
+				newTopSide.MakeTwiceTurn();
+			else
+				newDownSide.MakeTwiceTurn();
+
 			return new RubikCube(
 				GetShiftedSide(Side.Front, turnTo),
-				GetShiftedSide(Side.Top, turnTo),
+				newTopSide,
 				GetClockwiseTurnedSide(Side.Right, isClockWiseForRight),
-				GetShiftedSide(Side.Back, turnTo),
-				GetShiftedSide(Side.Down, turnTo),
+				newBackSide,
+				newDownSide,
 				GetClockwiseTurnedSide(Side.Left, !isClockWiseForRight));
 		}
 
 		private CubeSide GetShiftedSide(Side side, TurnTo turnTo)
 		{
-			var changedSides =
-				turnTo == TurnTo.Left || turnTo == TurnTo.Right
-					? changedOnHorizontalTurnSides
-					: changedOnVerticalTurnSides;
+			var changedSides = turnTo == TurnTo.Left || turnTo == TurnTo.Right
+				? changedOnHorizontalTurnSides
+				: changedOnVerticalTurnSides;
 
-			var shiftFactor =
-				turnTo == TurnTo.Right || turnTo == TurnTo.Down
-					? 1
-					: -1;
+			var shiftFactor = turnTo == TurnTo.Right || turnTo == TurnTo.Down
+				? 1
+				: -1;
 
 			var currentSideIndex = 0;
 			while (changedSides[currentSideIndex] != side)

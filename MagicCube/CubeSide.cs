@@ -54,7 +54,7 @@ namespace MagicCube
 			return (row - 1) * 3 + (column - 1);
 		}
 
-		public void MakeClockwiseTurn(bool isForwardTurn)
+		public CubeSide MakeClockwiseTurn(bool isForwardTurn = true)
 		{
 			var newColors = Colors.Clone() as CellColor[];
 			if (newColors == null)
@@ -71,6 +71,14 @@ namespace MagicCube
 				}
 
 			Colors = newColors;
+
+			return this;
+		}
+
+		public void MakeTwiceTurn()
+		{
+			MakeClockwiseTurn();
+			MakeClockwiseTurn();
 		}
 	}
 }
