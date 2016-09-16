@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MagicCube
 {
@@ -44,52 +45,50 @@ namespace MagicCube
 
 		private RubikCube MakeHorizontalTurn(TurnTo turn, Layer layer)
 		{
-			var changedSidesIndices = new[] { Side.Front, Side.Left, Side.Back, Side.Right };
-			var changedSides = changedSidesIndices.Select(CloneSide).ToArray();
-			var startCell = (int)layer * 3;
-			var turnDirection = turn == TurnTo.Left ? -1 : 1;
-
-			for (var sideIndex = 0; sideIndex < changedSidesIndices.Length; ++sideIndex)
-			{
-				var oldSideIndex = (sideIndex + turnDirection + 4) % changedSidesIndices.Length;
-				var oldSide = this[changedSidesIndices[oldSideIndex]];
-
-				for (var i = 0; i < 3; ++i)
-					changedSides[sideIndex][startCell + i] = oldSide[startCell + i];
-			}
-
 			return new RubikCube(
-				changedSides[0],
+				GetHorizontalTurnedSide(Side.Front, turn, layer),
 				this[Side.Top],
-				changedSides[3],
-				changedSides[2],
+				GetHorizontalTurnedSide(Side.Right, turn, layer),
+				GetHorizontalTurnedSide(Side.Back, turn, layer),
 				this[Side.Down],
-				changedSides[1]);
+				GetHorizontalTurnedSide(Side.Left, turn, layer));
+		}
+
+		private CubeSide GetHorizontalTurnedSide(Side side, TurnTo turnTo, Layer layer)
+		{
+			var rowNumber = (int) layer + 1;
+			var newSide = CloneSide(side);
+			var fromSide = GetNextSideForTurn(
+				side,  
+				changedOnHorizontalTurnSides,
+				turnTo == TurnTo.Right ? 1 : -1);
+
+			for (var column = 1; column <= 3; ++column)
+				newSide.SetColor(
+					this[fromSide].GetColor(rowNumber, column), 
+					rowNumber, 
+					column);
+
+			return newSide;
+		}
+
+		private static Side GetNextSideForTurn(Side side, IReadOnlyList<Side> changedSides, int shiftFactor)
+		{
+			var currentSideIndex = 0;
+			while (changedSides[currentSideIndex] != side)
+				++currentSideIndex;
+
+			var nextSideIndex = (shiftFactor + currentSideIndex + 4) % 4;
+			return changedSides[nextSideIndex];
 		}
 
 		private RubikCube MakeVerticalTurn(TurnTo turn, Layer layer)
 		{
-			var changedSidesIndices = new[] { Side.Front, Side.Top, Side.Back, Side.Down };
-			var changedSides = changedSidesIndices.Select(side => this[side]).ToArray();
-			var startCell = (int)layer;
-			var turnDirection = turn == TurnTo.Up ? -1 : 1;
-
-			for (var sideIndex = 0; sideIndex < changedSidesIndices.Length; ++sideIndex)
-			{
-				var oldSideIndex = (sideIndex + turnDirection + 4) % changedSidesIndices.Length;
-				var oldSide = this[changedSidesIndices[oldSideIndex]];
-
-				for (var i = 0; i < 3; ++i)
-					changedSides[sideIndex][startCell + i * 3] = oldSide[startCell + i * 3];
-			}
-
-			return new RubikCube(
-				changedSides[0],
-				changedSides[1],
-				this[Side.Right],
-				changedSides[2],
-				changedSides[3],
-				this[Side.Left]);
+			return MakeTurnToCorner(TurnTo.Right)
+				.MakeHorizontalTurn(
+					turn == TurnTo.Up ? TurnTo.Right : TurnTo.Left, 
+					layer)
+				.MakeTurnToCorner(TurnTo.Left);
 		}
 
 		public RubikCube MakeRollTurn(TurnTo turnTo)
@@ -145,13 +144,9 @@ namespace MagicCube
 				? 1
 				: -1;
 
-			var currentSideIndex = 0;
-			while (changedSides[currentSideIndex] != side)
-				++currentSideIndex;
+			var newSideIndex = GetNextSideForTurn(side, changedSides, shiftFactor);
 
-			var newSideIndex = (shiftFactor + currentSideIndex + 4) % 4;
-
-			return CloneSide(changedSides[newSideIndex]);
+			return CloneSide(newSideIndex);
 		}
 
 		private CubeSide GetClockwiseTurnedSide(Side side, bool isClockwise)
@@ -159,6 +154,16 @@ namespace MagicCube
 			var newSide = CloneSide(side);
 			newSide.MakeClockwiseTurn(isClockwise);
 			return newSide;
+		}
+
+		public RubikCube MakeTurnToCorner(TurnTo turnTo)
+		{
+			if (turnTo == TurnTo.Up || turnTo == TurnTo.Down)
+				throw new ArgumentOutOfRangeException(nameof(turnTo));
+
+			return MakeRollTurn(TurnTo.Down)
+				.MakeRollTurn(turnTo)
+				.MakeRollTurn(TurnTo.Up);
 		}
 	}
 }

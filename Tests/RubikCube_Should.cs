@@ -198,36 +198,72 @@ namespace Tests
 			Assert.That(nextCube[Side.Right].Colors, Is.EqualTo(expectedColors));
 		}
 
-		//[Test]
-		//public void ChangeSides_AfterTurnToUpFirstLayer()
-		//{
-		//	var expectedColors = new CellColor[]
-		//	{
-		//		CellColor.Yellow, CellColor.Yellow, CellColor.White, 
-		//		CellColor.Yellow, CellColor.Yellow, CellColor.White, 
-		//		CellColor.Yellow, CellColor.Yellow, CellColor.White
-		//	};
+		[Test]
+		public void MakeClockwiseTurnOfFront_ForTurnToCornerRight()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Front, 1, 1, CellColor.White);
 
-		//	var nextCube = cube.MakeTurn(TurnTo.Up, Layer.First);
+			var nextCube = testCube.MakeTurnToCorner(TurnTo.Right);
 
-		//	Assert.That(nextCube[Side.Back].Colors, Is.EqualTo(expectedColors));
-		//}
+			Assert.That(nextCube[Side.Front].GetColor(1, 3), Is.EqualTo(CellColor.White));
+		}
 
-		//		[Test]
-		//		public void ChangeSides_AfterTurnToDownSecondLayer()
-		//		{
-		//			var expectedColors = new[]
-		//			{
-		//				CellColor.Blue, CellColor.Green, CellColor.Blue,
-		//				CellColor.Blue, CellColor.Green, CellColor.Blue,
-		//				CellColor.Blue, CellColor.Green, CellColor.Blue,
-		//			};
-		//
-		//			var nextCube = cube.MakeTurn(TurnTo.Down, Layer.Second);
-		//
-		//			Assert.That(nextCube[Side.Down].Colors, Is.EqualTo(expectedColors));
-		//		}
+		[Test]
+		public void MakeNotClockwiseTurnOfFront_ForTurnToCornerLeft()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Front, 1, 1, CellColor.White);
 
+			var nextCube = testCube.MakeTurnToCorner(TurnTo.Left);
+
+			Assert.That(nextCube[Side.Front].GetColor(3, 1), Is.EqualTo(CellColor.White));
+		}
+
+		[Test]
+		public void ThrowArgumentOutOfRangeException_ForTurnToCornerUp()
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() =>
+			{
+				cube.MakeTurnToCorner(TurnTo.Up);
+			});
+		}
+
+		[Test]
+		public void ThrowArgumentOutOfRangeException_ForTurnToCornerDown()
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() =>
+			{
+				cube.MakeTurnToCorner(TurnTo.Down);
+			});
+		}
+
+		[Test]
+		public void ChangeSides_AfterTurnToUpFirstLayer()
+		{
+			var nextCube = cube.MakeTurn(TurnTo.Up, Layer.First);
+
+			var expectedColors = new[]
+			{
+				CellColor.Yellow, CellColor.Yellow, CellColor.White,
+				CellColor.Yellow, CellColor.Yellow, CellColor.White,
+				CellColor.Yellow, CellColor.Yellow, CellColor.White
+			};
+			Assert.That(nextCube[Side.Back].Colors, Is.EqualTo(expectedColors));
+		}
+
+		[Test]
+		public void ChangeSides_AfterTurnToDownThirdLayer()
+		{
+			var nextCube = cube.MakeTurn(TurnTo.Down, Layer.Third);
+
+			var expecredColors = new[]
+			{
+				CellColor.Blue, CellColor.Blue, CellColor.Green, 
+				CellColor.Blue, CellColor.Blue, CellColor.Green, 
+				CellColor.Blue, CellColor.Blue, CellColor.Green
+			};
+			Assert.That(nextCube[Side.Down].Colors, Is.EqualTo(expecredColors));
+		}
+		
 		#endregion TurnTests
 	}
 }
