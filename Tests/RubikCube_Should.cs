@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MagicCube;
 using NUnit.Framework;
 
@@ -23,112 +24,91 @@ namespace Tests
 		}
 
 		[Test]
-		[TestCase(Side.Front, CellColor.Green)]
-		[TestCase(Side.Top, CellColor.White)]
-		[TestCase(Side.Right, CellColor.Orange)]
-		[TestCase(Side.Back, CellColor.Yellow)]
-		[TestCase(Side.Down, CellColor.Blue)]
-		[TestCase(Side.Left, CellColor.Red)]
-		public void HaveCorrectSide_AfterInitialization(Side side, CellColor sideColor)
-		{
-			Assert.That(cube[side].Colors.All(c => c == sideColor), Is.True);
-		}
-
-		[Test]
 		public void GetColor_ByTwoIndices()
 		{
-			var newTopSide = cube.CloneSide(Side.Top);
-			newTopSide.Colors[4] = CellColor.Red;
-			var newCube = new RubikCube(frontSide, newTopSide, rightSide, backSide, downSide, leftSide);
-
-			Assert.That(newCube.GetColor(Side.Top, 2, 2), Is.EqualTo(CellColor.Red));
+			Assert.That(cube.GetColor(Side.Top, 2, 2), Is.EqualTo(CellColor.White));
 		}
 
 		#region RollTests
 
 		[Test]
-		public void CycleShiftWallSides_AfterRollToRight()
+		public void CycleShiftSides_AfterRollToRight()
 		{
-			var nextState = cube.MakeRollTurn(TurnTo.Right);
+			var nextCube = cube.MakeRollTurn(TurnTo.Right);
 
-			Assert.That(nextState[Side.Front].Colors.All(color => color == CellColor.Red),
-				Is.True);
+			Assert.That(HasFilledSide(nextCube, Side.Front, CellColor.Red), Is.True);
 		}
 
 		[Test]
-		public void CycleShiftWallSides_AfterRollToLeft()
+		public void CycleShiftSides_AfterRollToLeft()
 		{
-			var nextState = cube.MakeRollTurn(TurnTo.Left);
+			var nextCube = cube.MakeRollTurn(TurnTo.Left);
 
-			Assert.That(nextState[Side.Front].Colors.All(color => color == CellColor.Orange),
-				Is.True);
-		}
-
-		[Test]
-		public void MakeNotClockwiseTurnOfTop_AfterRollToRight()
-		{
-			const CellColor color = CellColor.Red;
-			const Side side = Side.Top;
-
-			var newTopSide = cube.CloneSide(side);
-			newTopSide.SetColor(color, 1, 1);
-			var newCube = new RubikCube(frontSide, newTopSide, rightSide, backSide, downSide, leftSide);
-
-			var nextState = newCube.MakeRollTurn(TurnTo.Right);
-
-			Assert.That(nextState[side].GetColor(3, 1), Is.EqualTo(color));
-		}
-
-		[Test]
-		public void MakeClockwiseTurnOfDown_AfterRollToRight()
-		{
-			const CellColor color = CellColor.Green;
-			const Side side = Side.Down;
-			
-			var newDownSide = cube.CloneSide(side);
-			newDownSide.SetColor(color, 1, 1);
-			var newCube = new RubikCube(frontSide, topSide, rightSide, backSide, newDownSide, leftSide);
-
-			var nextState = newCube.MakeRollTurn(TurnTo.Right);
-
-			Assert.That(nextState[side].GetColor(1, 3), Is.EqualTo(color));
-		}
-
-		[Test]
-		public void MakeClockWiseTurnOfTop_AfterRollToLeft()
-		{
-			const CellColor color = CellColor.Yellow;
-			const Side side = Side.Top;
-
-			var newTopSide = cube.CloneSide(side);
-			newTopSide.SetColor(color, 1, 1);
-			var newCube = new RubikCube(frontSide, newTopSide, rightSide, backSide, downSide, leftSide);
-
-			var nextState = newCube.MakeRollTurn(TurnTo.Left);
-
-			Assert.That(nextState[side].GetColor(1, 3), Is.EqualTo(color));
+			Assert.That(HasFilledSide(nextCube, Side.Front, CellColor.Orange), Is.True);
 		}
 
 		[Test]
 		public void CycleShiftSides_AfterRollToUp()
 		{
-			var nextState = cube.MakeRollTurn(TurnTo.Up);
+			var nextCube = cube.MakeRollTurn(TurnTo.Up);
 
-			Assert.That(nextState[Side.Front].Colors.All(color => color == CellColor.Blue),
-				Is.True);
+			Assert.That(HasFilledSide(nextCube, Side.Front, CellColor.Blue), Is.True);
+		}
+
+		private static bool HasFilledSide(RubikCube rubikCube, Side side, CellColor color)
+		{
+			return rubikCube[side].Colors.All(currentColor => currentColor == color);
+		}
+
+		[Test]
+		public void MakeNotClockwiseTurnOfTop_AfterRollToRight()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Top, 1, 1, CellColor.Red);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Right);
+
+			Assert.That(nextCube[Side.Top].GetColor(3, 1), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void MakeClockwiseTurnOfDown_AfterRollToRight()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Down, 1, 1, CellColor.Green);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Right);
+
+			Assert.That(nextCube[Side.Down].GetColor(1, 3), Is.EqualTo(CellColor.Green));
+		}
+
+		[Test]
+		public void MakeClockWiseTurnOfTop_AfterRollToLeft()
+		{
+			var testCube = CreateCubeWithConcreteCell(Side.Top, 1, 1, CellColor.Yellow);
+
+			var nextCube = testCube.MakeRollTurn(TurnTo.Left);
+
+			Assert.That(nextCube[Side.Top].GetColor(1, 3), Is.EqualTo(CellColor.Yellow));
 		}
 
 		[Test]
 		public void CorrectHandleBackSide_AfterRollToDown()
 		{
-			const CellColor color = CellColor.Red;
-			var newBackSide = cube.CloneSide(Side.Back);
-			newBackSide.SetColor(color, 1, 1);
-			var newCube = new RubikCube(frontSide, topSide, rightSide, newBackSide, downSide, leftSide);
+			var testCube = CreateCubeWithConcreteCell(Side.Back, 1, 1, CellColor.Red);
 
-			var nextState = newCube.MakeRollTurn(TurnTo.Down);
+			var nextCube = testCube.MakeRollTurn(TurnTo.Down);
 
-			Assert.That(nextState[Side.Top].GetColor(3, 3), Is.EqualTo(color));
+			Assert.That(nextCube[Side.Top].GetColor(3, 3), Is.EqualTo(CellColor.Red));
+		}
+
+		private RubikCube CreateCubeWithConcreteCell(Side side, int row, int column, CellColor color)
+		{
+			var newSides = Enum.GetValues(typeof(Side)).Cast<Side>()
+				.Select(curentSide => cube.CloneSide(curentSide))
+				.ToArray();
+			
+			newSides[(int)side].SetColor(color, row, column);
+
+			return new RubikCube(newSides[0], newSides[1], newSides[2], newSides[3], newSides[4], newSides[5]);
 		}
 
 		#endregion RollTests
@@ -138,7 +118,7 @@ namespace Tests
 		[Test]
 		public void ChangeSides_AfterTurnToLeftFirstLayer()
 		{
-			var nextState = cube.MakeTurn(TurnTo.Left, Layer.First);
+			var nextCube = cube.MakeTurn(TurnTo.Left, Layer.First);
 
 			var expectedColors = new[]
 			{
@@ -146,13 +126,13 @@ namespace Tests
 				CellColor.Green, CellColor.Green, CellColor.Green,
 				CellColor.Green, CellColor.Green, CellColor.Green
 			};
-			Assert.That(nextState[Side.Front].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[Side.Front].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
 		public void ChangeSides_AfterTurnToLeftThirdLayer()
 		{
-			var nextState = cube.MakeTurn(TurnTo.Left, Layer.Third);
+			var nextCube = cube.MakeTurn(TurnTo.Left, Layer.Third);
 
 			var expectedColors = new[]
 			{
@@ -160,13 +140,13 @@ namespace Tests
 				CellColor.Yellow, CellColor.Yellow, CellColor.Yellow,
 				CellColor.Red, CellColor.Red, CellColor.Red
 			};
-			Assert.That(nextState[Side.Back].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[Side.Back].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
 		public void ChangeSides_AfterTurnToRightSecondLayer()
 		{
-			var nextState = cube.MakeTurn(TurnTo.Right, Layer.Second);
+			var nextCube = cube.MakeTurn(TurnTo.Right, Layer.Second);
 
 			var expectedColors = new[]
 			{
@@ -175,7 +155,7 @@ namespace Tests
 				CellColor.Orange, CellColor.Orange, CellColor.Orange,
 			};
 
-			Assert.That(nextState[Side.Right].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[Side.Right].Colors, Is.EqualTo(expectedColors));
 		}
 
 		//[Test]
@@ -188,9 +168,9 @@ namespace Tests
 		//		CellColor.Yellow, CellColor.Yellow, CellColor.White
 		//	};
 
-		//	var nextState = cube.MakeTurn(TurnTo.Up, Layer.First);
+		//	var nextCube = cube.MakeTurn(TurnTo.Up, Layer.First);
 
-		//	Assert.That(nextState[Side.Back].Colors, Is.EqualTo(expectedColors));
+		//	Assert.That(nextCube[Side.Back].Colors, Is.EqualTo(expectedColors));
 		//}
 
 		//		[Test]
@@ -203,9 +183,9 @@ namespace Tests
 		//				CellColor.Blue, CellColor.Green, CellColor.Blue,
 		//			};
 		//
-		//			var nextState = cube.MakeTurn(TurnTo.Down, Layer.Second);
+		//			var nextCube = cube.MakeTurn(TurnTo.Down, Layer.Second);
 		//
-		//			Assert.That(nextState[Side.Down].Colors, Is.EqualTo(expectedColors));
+		//			Assert.That(nextCube[Side.Down].Colors, Is.EqualTo(expectedColors));
 		//		}
 
 		#endregion TurnTests
