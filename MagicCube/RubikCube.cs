@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace MagicCube
 {
@@ -10,16 +11,16 @@ namespace MagicCube
 		{
 			sides = new[]
 			{
-				frontSide,
-				topSide,
-				rightSide,
-				backSide,
-				downSide,
-				leftSide
+				new CubeSide(frontSide),
+				new CubeSide(topSide),
+				new CubeSide(rightSide),
+				new CubeSide(backSide),
+				new CubeSide(downSide),
+				new CubeSide(leftSide)
 			};
 		}
 
-		public CubeSide this[Side side] => new CubeSide(sides[(int)side]);
+		public CubeSide this[Side side] => sides[(int)side];
 
 		public RubikCube MakeTurn(TurnTo turn, Layer layer)
 		{
@@ -29,10 +30,15 @@ namespace MagicCube
 				return MakeVerticalTurn(turn, layer);
 		}
 
+		public CubeSide CloneSide(Side side)
+		{
+			return new CubeSide(this[side]);
+		}
+
 		private RubikCube MakeHorizontalTurn(TurnTo turn, Layer layer)
 		{
 			var changedSidesIndices = new[] { Side.Front, Side.Left, Side.Back, Side.Right };
-			var changedSides = changedSidesIndices.Select(side => this[side]).ToArray();
+			var changedSides = changedSidesIndices.Select(CloneSide).ToArray();
 			var startCell = (int)layer * 3;
 			var turnDirection = turn == TurnTo.Left ? -1 : 1;
 
@@ -77,6 +83,28 @@ namespace MagicCube
 				changedSides[2],
 				changedSides[3],
 				this[Side.Left]);
+		}
+
+		public RubikCube MakeRollTurn(TurnTo right)
+		{
+			var newTopSide = CloneSide(Side.Top);
+
+			for (var i = 0; i < 3; ++i)
+				for (var j = 0; j < 3; ++j)
+					newTopSide[i*3 + j] = this[Side.Top][(2 - j % 3) * 3 + i];
+
+			return new RubikCube(
+				this[Side.Left],
+				newTopSide,
+				this[Side.Front],
+				this[Side.Right],
+				this[Side.Down],
+				this[Side.Back]);
+		}
+
+		public CellColor GetColor(Side side, int row, int column)
+		{
+			return this[side].GetColor(row, column);
 		}
 	}
 }
