@@ -88,19 +88,19 @@ namespace MagicCube
 
 		public RubikCube MakeRollTurn(TurnTo turnTo)
 		{
-			var newSides = CycleShiftSides(turnTo);
-			var isClockwistTurn = turnTo == TurnTo.Right;
+			var newWallSides = CycleShiftWallSides(turnTo);
+			var isClockwistTurnForTopSide = turnTo == TurnTo.Left;
 
 			return new RubikCube(
-				newSides[0],
-				GetClockwiseTurnedSide(Side.Top, !isClockwistTurn),
-				newSides[3],
-				newSides[2],
-				GetClockwiseTurnedSide(Side.Down, isClockwistTurn),
-				newSides[1]);
+				newWallSides[0],
+				GetClockwiseTurnedSide(Side.Top, isClockwistTurnForTopSide),
+				newWallSides[3],
+				newWallSides[2],
+				GetClockwiseTurnedSide(Side.Down, !isClockwistTurnForTopSide),
+				newWallSides[1]);
 		}
 
-		private CubeSide[] CycleShiftSides(TurnTo turnTo)
+		private CubeSide[] CycleShiftWallSides(TurnTo turnTo)
 		{
 			var changedSides = changedOnHorizontalTurnSides.Select(CloneSide).ToArray();
 
@@ -123,8 +123,8 @@ namespace MagicCube
 					var color = this[side].GetColor(i, j);
 					newSide.SetColor(
 						color, 
-						isClockWise ? 4 - j : j,
-						isClockWise ? i : 4 - i);
+						isClockWise ? j : 4 - j,
+						isClockWise ? 4 - i : i);
 				}
 
 			return newSide;
