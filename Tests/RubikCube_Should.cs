@@ -37,44 +37,42 @@ namespace Tests
 		[Test]
 		public void ChangeSides_AfterTurnToLeftFirstLayer()
 		{
+			var nextState = cube.MakeTurn(TurnTo.Left, Layer.First);
+
 			var expectedColors = new[]
 			{
 				CellColor.Orange, CellColor.Orange, CellColor.Orange,
 				CellColor.Green, CellColor.Green, CellColor.Green,
 				CellColor.Green, CellColor.Green, CellColor.Green
 			};
-
-			var nextState = cube.MakeTurn(TurnTo.Left, Layer.First);
-
 			Assert.That(nextState[Side.Front].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
 		public void ChangeSides_AfterTurnToLeftThirdLayer()
 		{
-			var expectedColors = new[]
-			{
-				CellColor.Yellow, CellColor.Yellow, CellColor.Yellow, 
-				CellColor.Yellow, CellColor.Yellow, CellColor.Yellow, 
-				CellColor.Red, CellColor.Red, CellColor.Red
-			};
-
 			var nextState = cube.MakeTurn(TurnTo.Left, Layer.Third);
 
+			var expectedColors = new[]
+			{
+				CellColor.Yellow, CellColor.Yellow, CellColor.Yellow,
+				CellColor.Yellow, CellColor.Yellow, CellColor.Yellow,
+				CellColor.Red, CellColor.Red, CellColor.Red
+			};
 			Assert.That(nextState[Side.Back].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
 		public void ChangeSides_AfterTurnToRightSecondLayer()
 		{
+			var nextState = cube.MakeTurn(TurnTo.Right, Layer.Second);
+
 			var expectedColors = new[]
 			{
-				CellColor.Orange, CellColor.Orange, CellColor.Orange, 
-				CellColor.Green, CellColor.Green, CellColor.Green, 
-				CellColor.Orange, CellColor.Orange, CellColor.Orange, 
+				CellColor.Orange, CellColor.Orange, CellColor.Orange,
+				CellColor.Green, CellColor.Green, CellColor.Green,
+				CellColor.Orange, CellColor.Orange, CellColor.Orange,
 			};
-
-			var nextState = cube.MakeTurn(TurnTo.Right, Layer.Second);
 
 			Assert.That(nextState[Side.Right].Colors, Is.EqualTo(expectedColors));
 		}
@@ -97,11 +95,9 @@ namespace Tests
 		[Test]
 		public void ChangeSides_AfterRollToRight()
 		{
-			var expectedColor = CellColor.Red;
-
 			var nextState = cube.MakeRollTurn(TurnTo.Right);
 
-			Assert.That(nextState[Side.Front].Colors.All(color => color == expectedColor),
+			Assert.That(nextState[Side.Front].Colors.All(color => color == CellColor.Red),
 				Is.True);
 		}
 

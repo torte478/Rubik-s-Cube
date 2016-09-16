@@ -8,19 +8,27 @@ namespace Tests
 	[TestFixture]
 	internal class CubeSide_Should
 	{
-		private readonly CellColor[] colors = {
+		private CubeSide cubeSide;
+
+		[SetUp]
+		public void SetUp()
+		{
+			cubeSide = new CubeSide(CellColor.White);
+		}
+
+		[Test]
+		public void ReturnColor_ByIndex()
+		{
+			CellColor[] colors = {
 				CellColor.Yellow, CellColor.Yellow, CellColor.Orange,
 				CellColor.Yellow, CellColor.Red, CellColor.Blue,
 				CellColor.Green, CellColor.Red, CellColor.Orange
 			};
 
-		[Test]
-		public void ReturnColor_ByIndex()
-		{
-			var cubeSide = new CubeSide(colors);
+			var side = new CubeSide(colors);
 
 			for (var i = 0; i < colors.Length; ++i)
-				Assert.That(cubeSide[i], Is.EqualTo(colors[i]));
+				Assert.That(side[i], Is.EqualTo(colors[i]));
 		}
 
 		[Test]
@@ -29,50 +37,33 @@ namespace Tests
 		[TestCase(9)]
 		public void ThrowIndexOutOfRangeException_ForWrongIndex(int wrongIndex)
 		{
-			var cubeSide = new CubeSide(colors);
-
 			Assert.Throws<IndexOutOfRangeException>(() =>
 			{
 				// ReSharper disable once UnusedVariable
 				var color = cubeSide[wrongIndex];
 			});
 		}
-
-		[Test]
-		public void ProvideAccess_ToColors()
-		{
-			var cubeSide = new CubeSide(CellColor.Orange);
-
-			cubeSide.Colors[4] = CellColor.Blue;
-		}
-
+		
 		[Test]
 		public void FillSide_ByOneColor()
 		{
-			const CellColor sideColor = CellColor.Green;
-
-			var cubeSide = new CubeSide(sideColor);
-
-			Assert.That(cubeSide.Colors.All(color => color == sideColor), Is.True);
+			Assert.That(cubeSide.Colors.All(color => color == CellColor.White), Is.True);
 		}
 
 		[Test]
 		public void CreateCopy_FromAnotherCubeSide()
-		{
-			const CellColor sideColor = CellColor.Blue;
-			var side = new CubeSide(sideColor);
+		{ 
+			var anotherSide = new CubeSide(cubeSide);
 
-			var anotherSide = new CubeSide(side);
-
-			Assert.That(anotherSide.Colors.All(color => color == sideColor), Is.True);
+			Assert.That(anotherSide.Colors.All(color => color == CellColor.White), Is.True);
 		}
 
 		[Test]
 		public void ChangeColor_ByIndex()
 		{
-			var side = new CubeSide(CellColor.White) {[5] = CellColor.Green};
+			cubeSide[5] = CellColor.Green;
 
-			Assert.That(side[5], Is.EqualTo(CellColor.Green));
+			Assert.That(cubeSide[5], Is.EqualTo(CellColor.Green));
 		}
 
 		[Test]
@@ -88,17 +79,13 @@ namespace Tests
 		[Test]
 		public void HaveNineColors_AfterOneColorFill()
 		{
-			var side = new CubeSide(CellColor.Red);
-
-			Assert.That(side.Colors.Count, Is.EqualTo(9));
+			Assert.That(cubeSide.Colors.Count, Is.EqualTo(9));
 		}
 
 		[Test]
 		public void ReturnColor_FromTwoIndices()
 		{
-			var side = new CubeSide(CellColor.Orange);
-
-			Assert.That(side.GetColor(2, 3), Is.EqualTo(CellColor.Orange));
+			Assert.That(cubeSide.GetColor(2, 3), Is.EqualTo(CellColor.White));
 		}
 
 		[Test]
@@ -106,12 +93,10 @@ namespace Tests
 		[TestCase(4)]
 		public void ThrowArgumentOutOfRangeException_ForWrongRowIndex(int wrongRowIndex)
 		{
-			var side = new CubeSide(CellColor.White);
-
 			Assert.Throws<ArgumentOutOfRangeException>(() =>
 			{
 				// ReSharper disable once UnusedVariable
-				var color = side.GetColor(wrongRowIndex, 2);
+				var color = cubeSide.GetColor(wrongRowIndex, 2);
 			});
 		}
 
@@ -120,33 +105,27 @@ namespace Tests
 		[TestCase(4)]
 		public void ThrowArgumentOutOfRangeException_ForWrongColumnIndex(int wrongColumnIndex)
 		{
-			var side = new CubeSide(CellColor.White);
-
 			Assert.Throws<ArgumentOutOfRangeException>(() =>
 			{
 				// ReSharper disable once UnusedVariable
-				var color = side.GetColor(1, wrongColumnIndex);
+				var color = cubeSide.GetColor(1, wrongColumnIndex);
 			});
 		}
 
 		[Test]
 		public void SetColor_FromTwoIndices()
 		{
-			var side = new CubeSide(CellColor.Blue);
+			cubeSide.SetColor(CellColor.Green, 2, 1);
 
-			side.SetColor(CellColor.Green, 2, 1);
-
-			Assert.That(side.GetColor(2, 1), Is.EqualTo(CellColor.Green));
+			Assert.That(cubeSide.GetColor(2, 1), Is.EqualTo(CellColor.Green));
 		}
 
 		[Test]
 		public void ThrowArgumentOutOfRangeException_ForSetColorForWrongCell()
 		{
-			var side = new CubeSide(CellColor.Red);
-
 			Assert.Throws<ArgumentOutOfRangeException>(() =>
 			{
-				side.SetColor(CellColor.Blue, -4, 10);
+				cubeSide.SetColor(CellColor.Blue, -4, 10);
 			});
 		}
 	}
