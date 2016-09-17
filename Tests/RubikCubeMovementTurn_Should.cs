@@ -85,5 +85,25 @@ namespace Tests
 			};
 			Assert.That(nextCube[SideIndex.Down].Colors, Is.EqualTo(expecredColors));
 		}
+
+		[Test]
+		public void MakeClockwiseTurnOfTop_AfterTurnToLeftFirstLayer()
+		{
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Top, 1, 1, CellColor.Red);
+
+			var nextState = testCube.MakeTurn(TurnTo.Left, Layer.First);
+
+			Assert.That(nextState[SideIndex.Top].GetColor(1, 3), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void MakeNotClockwiseTurnOfDown_AfterTurnToLeftThirdLayer()
+		{
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Down, 1, 1, CellColor.White);
+
+			var nextState = testCube.MakeTurn(TurnTo.Left, Layer.Third);
+
+			Assert.That(nextState[SideIndex.Down].GetColor(3, 1), Is.EqualTo(CellColor.White));
+		}
 	}
 }

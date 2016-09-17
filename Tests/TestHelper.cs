@@ -18,7 +18,7 @@ namespace Tests
 			return new RubikCube(frontSide, topSide, rightSide, backSide, downSide, leftSide);
 		}
 
-		public static RubikCube GetCubeWithConcreteCell(SideIndex side, int row, int column, CellColor color)
+		public static RubikCube GetCubeWithConcreteCell(SideIndex sideIndex, int rowIndex, int columnIndex, CellColor color)
 		{
 			var cube = GetCompleteCube();
 
@@ -26,7 +26,7 @@ namespace Tests
 				.Select(curentSide => cube.CloneSide(curentSide))
 				.ToArray();
 
-			newSides[(int)side].SetColor(color, row, column);
+			newSides[(int)sideIndex].SetColor(color, rowIndex, columnIndex);
 
 			return new RubikCube(newSides[0], newSides[1], newSides[2], newSides[3], newSides[4], newSides[5]);
 		}

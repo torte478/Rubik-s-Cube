@@ -98,15 +98,18 @@ namespace MagicCube.Movement
 				return rubikCube.MakeVerticalTurn(turn, layer);
 		}
 
-		private static RubikCube MakeHorizontalTurn(this RubikCube rubikCube, TurnTo turn, Layer layer)
+		private static RubikCube MakeHorizontalTurn(this RubikCube rubikCube, TurnTo turnTo, Layer layer)
 		{
+			var topSideClockwiseDirection = turnTo == TurnTo.Left ? TurnTo.Right : TurnTo.Left;
+			var downSideClockwiseDirection = turnTo == TurnTo.Right ? TurnTo.Right : TurnTo.Left;
+
 			return new RubikCube(
-				topSide:   rubikCube[SideIndex.Top],
-				downSide:  rubikCube[SideIndex.Down],
-				frontSide: rubikCube.GetHorizontalTurnedSide(SideIndex.Front, turn, layer),
-				rightSide: rubikCube.GetHorizontalTurnedSide(SideIndex.Right, turn, layer),
-				backSide:  rubikCube.GetHorizontalTurnedSide(SideIndex.Back,  turn, layer),
-				leftSide:  rubikCube.GetHorizontalTurnedSide(SideIndex.Left,  turn, layer));
+				topSide:   rubikCube.GetClockwiseTurnedSide(SideIndex.Top,  topSideClockwiseDirection),
+				downSide:  rubikCube.GetClockwiseTurnedSide(SideIndex.Down, downSideClockwiseDirection),
+				frontSide: rubikCube.GetHorizontalTurnedSide(SideIndex.Front, turnTo, layer),
+				rightSide: rubikCube.GetHorizontalTurnedSide(SideIndex.Right, turnTo, layer),
+				backSide:  rubikCube.GetHorizontalTurnedSide(SideIndex.Back,  turnTo, layer),
+				leftSide:  rubikCube.GetHorizontalTurnedSide(SideIndex.Left,  turnTo, layer));
 		}
 
 		private static CubeSide GetHorizontalTurnedSide(this RubikCube rubikCube, SideIndex sideIndex, TurnTo turnTo, Layer layer)
@@ -146,6 +149,8 @@ namespace MagicCube.Movement
 				.MakeRollToCorner(TurnTo.Left);
 		}
 
+		/// <param name="rubikCube"></param>
+		/// <param name="turnTo">Left or Right</param>
 		public static RubikCube MakeRollToCorner(this RubikCube rubikCube, TurnTo turnTo)
 		{
 			if (turnTo == TurnTo.Up || turnTo == TurnTo.Down)
