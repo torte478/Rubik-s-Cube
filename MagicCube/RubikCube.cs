@@ -25,10 +25,5 @@
 		{
 			return new CubeSide(this[sideIndex]);
 		}
-
-		public CellColor GetColor(SideIndex sideIndex, int rowIndex, int columnIndex)
-		{
-			return this[sideIndex].GetColor(rowIndex, columnIndex);
-		}
 	}
 }
