@@ -1,6 +1,6 @@
 ﻿namespace MagicCube
 {
-	public enum Side
+	public enum SideIndex
 	{
 		Front,
 		Top,

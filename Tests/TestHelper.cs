@@ -18,11 +18,11 @@ namespace Tests
 			return new RubikCube(frontSide, topSide, rightSide, backSide, downSide, leftSide);
 		}
 
-		public static RubikCube GetCubeWithConcreteCell(Side side, int row, int column, CellColor color)
+		public static RubikCube GetCubeWithConcreteCell(SideIndex side, int row, int column, CellColor color)
 		{
 			var cube = GetCompleteCube();
 
-			var newSides = Enum.GetValues(typeof(Side)).Cast<Side>()
+			var newSides = Enum.GetValues(typeof(SideIndex)).Cast<SideIndex>()
 				.Select(curentSide => cube.CloneSide(curentSide))
 				.ToArray();
 

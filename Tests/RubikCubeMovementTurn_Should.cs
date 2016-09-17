@@ -26,7 +26,7 @@ namespace Tests
 				CellColor.Green, CellColor.Green, CellColor.Green,
 				CellColor.Green, CellColor.Green, CellColor.Green
 			};
-			Assert.That(nextCube[Side.Front].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[SideIndex.Front].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
@@ -40,7 +40,7 @@ namespace Tests
 				CellColor.Yellow, CellColor.Yellow, CellColor.Yellow,
 				CellColor.Red, CellColor.Red, CellColor.Red
 			};
-			Assert.That(nextCube[Side.Back].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[SideIndex.Back].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
@@ -55,7 +55,7 @@ namespace Tests
 				CellColor.Orange, CellColor.Orange, CellColor.Orange,
 			};
 
-			Assert.That(nextCube[Side.Right].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[SideIndex.Right].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
@@ -69,7 +69,7 @@ namespace Tests
 				CellColor.Yellow, CellColor.Yellow, CellColor.White,
 				CellColor.Yellow, CellColor.Yellow, CellColor.White
 			};
-			Assert.That(nextCube[Side.Back].Colors, Is.EqualTo(expectedColors));
+			Assert.That(nextCube[SideIndex.Back].Colors, Is.EqualTo(expectedColors));
 		}
 
 		[Test]
@@ -83,7 +83,7 @@ namespace Tests
 				CellColor.Blue, CellColor.Blue, CellColor.Green,
 				CellColor.Blue, CellColor.Blue, CellColor.Green
 			};
-			Assert.That(nextCube[Side.Down].Colors, Is.EqualTo(expecredColors));
+			Assert.That(nextCube[SideIndex.Down].Colors, Is.EqualTo(expecredColors));
 		}
 	}
 }

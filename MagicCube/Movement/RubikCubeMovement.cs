@@ -5,8 +5,8 @@ namespace MagicCube.Movement
 {
 	public static class RubikCubeMovement
 	{
-		private static readonly Side[] changedOnHorizontalTurnSides = { Side.Front, Side.Left, Side.Back, Side.Right };
-		private static readonly Side[] changedOnVerticalTurnSides = { Side.Front, Side.Top, Side.Back, Side.Down };
+		private static readonly SideIndex[] changedOnHorizontalTurnSides = { SideIndex.Front, SideIndex.Left, SideIndex.Back, SideIndex.Right };
+		private static readonly SideIndex[] changedOnVerticalTurnSides = { SideIndex.Front, SideIndex.Top, SideIndex.Back, SideIndex.Down };
 
 		public static RubikCube MakeRollTurn(this RubikCube rubikCube, TurnTo turnTo)
 		{
@@ -18,19 +18,19 @@ namespace MagicCube.Movement
 		private static RubikCube MakeHorizontalTurn(this RubikCube rubikCube, TurnTo turnTo)
 		{
 			return new RubikCube(
-				rubikCube.GetShiftedSide(Side.Front, turnTo),
-				rubikCube.GetClockwiseTurnedSide(Side.Top, turnTo == TurnTo.Left ? TurnTo.Right : TurnTo.Left),
-				rubikCube.GetShiftedSide(Side.Right, turnTo),
-				rubikCube.GetShiftedSide(Side.Back, turnTo),
-				rubikCube.GetClockwiseTurnedSide(Side.Down, turnTo != TurnTo.Left ? TurnTo.Right : TurnTo.Left),
-				rubikCube.GetShiftedSide(Side.Left, turnTo));
+				rubikCube.GetShiftedSide(SideIndex.Front, turnTo),
+				rubikCube.GetClockwiseTurnedSide(SideIndex.Top, turnTo == TurnTo.Left ? TurnTo.Right : TurnTo.Left),
+				rubikCube.GetShiftedSide(SideIndex.Right, turnTo),
+				rubikCube.GetShiftedSide(SideIndex.Back, turnTo),
+				rubikCube.GetClockwiseTurnedSide(SideIndex.Down, turnTo != TurnTo.Left ? TurnTo.Right : TurnTo.Left),
+				rubikCube.GetShiftedSide(SideIndex.Left, turnTo));
 		}
 
 		private static RubikCube MakeVerticalTurn(this RubikCube rubikCube, TurnTo turnTo)
 		{
-			var newBackSide = rubikCube.GetShiftedSide(Side.Back, turnTo);
-			var newTopSide = rubikCube.GetShiftedSide(Side.Top, turnTo);
-			var newDownSide = rubikCube.GetShiftedSide(Side.Down, turnTo);
+			var newBackSide = rubikCube.GetShiftedSide(SideIndex.Back, turnTo);
+			var newTopSide = rubikCube.GetShiftedSide(SideIndex.Top, turnTo);
+			var newDownSide = rubikCube.GetShiftedSide(SideIndex.Down, turnTo);
 
 			newBackSide.MakeTwiceClockwiseTurn();
 			if (turnTo == TurnTo.Down)
@@ -39,15 +39,15 @@ namespace MagicCube.Movement
 				newDownSide.MakeTwiceClockwiseTurn();
 
 			return new RubikCube(
-				rubikCube.GetShiftedSide(Side.Front, turnTo),
+				rubikCube.GetShiftedSide(SideIndex.Front, turnTo),
 				newTopSide,
-				rubikCube.GetClockwiseTurnedSide(Side.Right, turnTo == TurnTo.Up ? TurnTo.Right : TurnTo.Left),
+				rubikCube.GetClockwiseTurnedSide(SideIndex.Right, turnTo == TurnTo.Up ? TurnTo.Right : TurnTo.Left),
 				newBackSide,
 				newDownSide,
-				rubikCube.GetClockwiseTurnedSide(Side.Left, turnTo != TurnTo.Up ? TurnTo.Right : TurnTo.Left));
+				rubikCube.GetClockwiseTurnedSide(SideIndex.Left, turnTo != TurnTo.Up ? TurnTo.Right : TurnTo.Left));
 		}
 
-		private static CubeSide GetShiftedSide(this RubikCube rubikCube, Side side, TurnTo turnTo)
+		private static CubeSide GetShiftedSide(this RubikCube rubikCube, SideIndex side, TurnTo turnTo)
 		{
 			var changedSides = turnTo == TurnTo.Left || turnTo == TurnTo.Right
 				? changedOnHorizontalTurnSides
@@ -62,14 +62,14 @@ namespace MagicCube.Movement
 			return rubikCube.CloneSide(newSideIndex);
 		}
 
-		private static CubeSide GetClockwiseTurnedSide(this RubikCube rubikCube, Side side, TurnTo turnTo)
+		private static CubeSide GetClockwiseTurnedSide(this RubikCube rubikCube, SideIndex side, TurnTo turnTo)
 		{
 			var newSide = rubikCube.CloneSide(side);
 			newSide.MakeClockwiseTurn(turnTo);
 			return newSide;
 		}
 
-		private static Side GetNextSideForTurn(Side side, IReadOnlyList<Side> changedSides, int shiftFactor)
+		private static SideIndex GetNextSideForTurn(SideIndex side, IReadOnlyList<SideIndex> changedSides, int shiftFactor)
 		{
 			var currentSideIndex = 0;
 			while (changedSides[currentSideIndex] != side)
@@ -90,15 +90,15 @@ namespace MagicCube.Movement
 		private static RubikCube MakeHorizontalTurn(this RubikCube rubikCube, TurnTo turn, Layer layer)
 		{
 			return new RubikCube(
-				rubikCube.GetHorizontalTurnedSide(Side.Front, turn, layer),
-				rubikCube[Side.Top],
-				rubikCube.GetHorizontalTurnedSide(Side.Right, turn, layer),
-				rubikCube.GetHorizontalTurnedSide(Side.Back, turn, layer),
-				rubikCube[Side.Down],
-				rubikCube.GetHorizontalTurnedSide(Side.Left, turn, layer));
+				rubikCube.GetHorizontalTurnedSide(SideIndex.Front, turn, layer),
+				rubikCube[SideIndex.Top],
+				rubikCube.GetHorizontalTurnedSide(SideIndex.Right, turn, layer),
+				rubikCube.GetHorizontalTurnedSide(SideIndex.Back, turn, layer),
+				rubikCube[SideIndex.Down],
+				rubikCube.GetHorizontalTurnedSide(SideIndex.Left, turn, layer));
 		}
 
-		private static CubeSide GetHorizontalTurnedSide(this RubikCube rubikCube, Side side, TurnTo turnTo, Layer layer)
+		private static CubeSide GetHorizontalTurnedSide(this RubikCube rubikCube, SideIndex side, TurnTo turnTo, Layer layer)
 		{
 			var rowNumber = (int)layer + 1;
 			var newSide = rubikCube.CloneSide(side);

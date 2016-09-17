@@ -17,14 +17,14 @@
 			};
 		}
 
-		public CubeSide this[Side side] => sides[(int)side];
+		public CubeSide this[SideIndex side] => sides[(int)side];
 
-		public CubeSide CloneSide(Side side)
+		public CubeSide CloneSide(SideIndex side)
 		{
 			return new CubeSide(this[side]);
 		}
 
-		public CellColor GetColor(Side side, int row, int column)
+		public CellColor GetColor(SideIndex side, int row, int column)
 		{
 			return this[side].GetColor(row, column);
 		}

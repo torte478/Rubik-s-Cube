@@ -17,7 +17,7 @@ namespace Tests
 		[Test]
 		public void GetColor_ByTwoIndices()
 		{
-			Assert.That(cube.GetColor(Side.Top, 2, 2), Is.EqualTo(CellColor.White));
+			Assert.That(cube.GetColor(SideIndex.Top, 2, 2), Is.EqualTo(CellColor.White));
 		}
 	}
 }

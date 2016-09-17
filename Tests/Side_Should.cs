@@ -7,13 +7,13 @@ namespace Tests
 	internal class Side_Should
 	{
 		[Test]
-		[TestCase(Side.Front, 0)]
-		[TestCase(Side.Top, 1)]
-		[TestCase(Side.Right, 2)]
-		[TestCase(Side.Back, 3)]
-		[TestCase(Side.Down, 4)]
-		[TestCase(Side.Left, 5)]
-		public void BeEqualTo_IntIndex(Side side, int expectedIndex)
+		[TestCase(SideIndex.Front, 0)]
+		[TestCase(SideIndex.Top, 1)]
+		[TestCase(SideIndex.Right, 2)]
+		[TestCase(SideIndex.Back, 3)]
+		[TestCase(SideIndex.Down, 4)]
+		[TestCase(SideIndex.Left, 5)]
+		public void BeEqualTo_IntIndex(SideIndex side, int expectedIndex)
 		{
 			var actualIndex = (int) side;
 
