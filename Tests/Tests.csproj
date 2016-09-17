@@ -47,8 +47,8 @@
     <Compile Include="CellColor_Should.cs" />
     <Compile Include="CubeSideMovement_Shoud.cs" />
     <Compile Include="CubeSide_Should.cs" />
-    <Compile Include="RubikCubeMovementRoll_Should.cs" />
     <Compile Include="RubikCubeMovementTurn_Should.cs" />
+    <Compile Include="RubikCubeMovementRotate_Should.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Side_Should.cs" />
     <Compile Include="TestHelper.cs" />

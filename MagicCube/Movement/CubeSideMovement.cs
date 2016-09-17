@@ -4,9 +4,9 @@ namespace MagicCube.Movement
 {
 	public static class CubeSideMovement
 	{
-		public static CubeSide MakeClockwiseTurn(this CubeSide cubeSide, TurnTo turnTo)
+		public static CubeSide MakeClockwiseRotate(this CubeSide cubeSide, TurnTo turnTo)
 		{
-			CheckСlockwiseTurnDirection(turnTo);
+			CheckСlockwiseRotateDirection(turnTo);
 
 			var oldSide = new CubeSide(cubeSide);
 			var isClockwiseTurn = turnTo == TurnTo.Right;
@@ -24,17 +24,17 @@ namespace MagicCube.Movement
 			return cubeSide;
 		}
 
-		private static void CheckСlockwiseTurnDirection(TurnTo turnTo)
+		private static void CheckСlockwiseRotateDirection(TurnTo turnTo)
 		{
 			if (turnTo != TurnTo.Right && turnTo != TurnTo.Left)
 				throw new ArgumentOutOfRangeException(nameof(turnTo));
 		}
 
-		public static CubeSide MakeTwiceClockwiseTurn(this CubeSide cubeSide)
+		public static CubeSide MakeTwiceClockwiseRotate(this CubeSide cubeSide)
 		{
 			return cubeSide
-				.MakeClockwiseTurn(TurnTo.Right)
-				.MakeClockwiseTurn(TurnTo.Right);
+				.MakeClockwiseRotate(TurnTo.Right)
+				.MakeClockwiseRotate(TurnTo.Right);
 		}
 	}
 }

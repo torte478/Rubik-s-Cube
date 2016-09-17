@@ -22,17 +22,17 @@ namespace Tests
 		}
 
 		[Test]
-		public void ReturnReferenceToThis_FromClockwiseMethod()
+		public void ReturnReferenceToThis_FromClockwiseRotateMethod()
 		{
-			var currentSide = complexCubeSide.MakeClockwiseTurn(TurnTo.Right);
+			var currentSide = complexCubeSide.MakeClockwiseRotate(TurnTo.Right);
 
 			Assert.That(currentSide.Colors, Is.EqualTo(complexCubeSide.Colors));
 		}
 
 		[Test]
-		public void ChangeColors_AfterClockwiseTurn()
+		public void ChangeColors_AfterClockwiseRotate()
 		{
-			complexCubeSide.MakeClockwiseTurn(TurnTo.Right);
+			complexCubeSide.MakeClockwiseRotate(TurnTo.Right);
 
 			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
 			{
@@ -43,9 +43,9 @@ namespace Tests
 		}
 
 		[Test]
-		public void MoveColors_AfterNotClockwiseTurn()
+		public void MoveColors_AfterNotClockwiseRotate()
 		{
-			complexCubeSide.MakeClockwiseTurn(TurnTo.Left);
+			complexCubeSide.MakeClockwiseRotate(TurnTo.Left);
 
 			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
 			{
@@ -56,9 +56,9 @@ namespace Tests
 		}
 
 		[Test]
-		public void ChangeColors_AfterTwiceClockwiceTurn()
+		public void ChangeColors_AfterTwiceClockwiceRotate()
 		{
-			complexCubeSide.MakeTwiceClockwiseTurn();
+			complexCubeSide.MakeTwiceClockwiseRotate();
 
 			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
 			{
@@ -71,11 +71,11 @@ namespace Tests
 		[Test]
 		[TestCase(TurnTo.Up)]
 		[TestCase(TurnTo.Down)]
-		public void ThrowArgumentOutOfRangeException_ForWrongClockwiseTurnDirection(TurnTo wrongTurnTo)
+		public void ThrowArgumentOutOfRangeException_ForWrongClockwiseRotateDirection(TurnTo wrongTurnTo)
 		{
 			Assert.Throws<ArgumentOutOfRangeException>(() =>
 			{
-				complexCubeSide.MakeClockwiseTurn(wrongTurnTo);
+				complexCubeSide.MakeClockwiseRotate(wrongTurnTo);
 			});
 		}
 	}
