@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using MagicCube;
 using MagicCube.Movement;
 using NUnit.Framework;
@@ -17,17 +16,12 @@ namespace Tests
 			cube = TestHelper.GetCompleteCube();
 		}
 
-		private static bool HasFilledSide(RubikCube rubikCube, SideIndex side, CellColor color)
-		{
-			return rubikCube[side].Colors.All(currentColor => currentColor == color);
-		}
-
 		[Test]
 		public void CycleShiftSides_AfterRollToRight()
 		{
 			var nextCube = cube.MakeRollTurn(TurnTo.Right);
 
-			Assert.That(HasFilledSide(nextCube, SideIndex.Front, CellColor.Red), Is.True);
+			Assert.That(nextCube[SideIndex.Front].IsFill(CellColor.Red), Is.True);
 		}
 
 		[Test]
@@ -35,7 +29,7 @@ namespace Tests
 		{
 			var nextCube = cube.MakeRollTurn(TurnTo.Left);
 
-			Assert.That(HasFilledSide(nextCube, SideIndex.Front, CellColor.Orange), Is.True);
+			Assert.That(nextCube[SideIndex.Front].IsFill(CellColor.Orange), Is.True);
 		}
 
 		[Test]
@@ -43,7 +37,7 @@ namespace Tests
 		{
 			var nextCube = cube.MakeRollTurn(TurnTo.Up);
 
-			Assert.That(HasFilledSide(nextCube, SideIndex.Front, CellColor.Blue), Is.True);
+			Assert.That(nextCube[SideIndex.Front].IsFill(CellColor.Blue), Is.True);
 		}
 
 		[Test]

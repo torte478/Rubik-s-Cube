@@ -113,5 +113,19 @@ namespace Tests
 				cubeSide.SetColor(CellColor.Blue, -4, 10);
 			});
 		}
+
+		[Test]
+		public void ReturnTrue_WhenFillByOneColor()
+		{
+			Assert.That(cubeSide.IsFill(CellColor.White), Is.True);
+		}
+
+		[Test]
+		public void ReturnFalse_WhenNotFillByOneColor()
+		{
+			cubeSide.SetColor(CellColor.Blue, 2, 3);
+
+			Assert.That(cubeSide.IsFill(CellColor.White), Is.False);
+		}
 	}
 }

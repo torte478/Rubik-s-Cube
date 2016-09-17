@@ -57,5 +57,10 @@ namespace MagicCube
 
 			return (row - 1) * 3 + (column - 1);
 		}
+
+		public bool IsFill(CellColor color)
+		{
+			return Colors.All(curColor => curColor == color);
+		}
 	}
 }
