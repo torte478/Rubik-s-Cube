@@ -1,4 +1,4 @@
-namespace MagicCube
+namespace MagicCube.Movement
 {
 	public enum TurnTo
 	{

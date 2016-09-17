@@ -9,18 +9,11 @@ namespace Tests
 	internal class CubeSide_Should
 	{
 		private CubeSide cubeSide;
-		private CubeSide complexCubeSide;
 
 		[SetUp]
 		public void SetUp()
 		{
 			cubeSide = new CubeSide(CellColor.White);
-			complexCubeSide = new CubeSide(new[]
-			{
-				CellColor.White, CellColor.Red, CellColor.Green,
-				CellColor.Blue, CellColor.Orange, CellColor.Yellow,
-				CellColor.Red, CellColor.Blue, CellColor.Green
-			});
 		}
 		
 		[Test]
@@ -119,53 +112,6 @@ namespace Tests
 			{
 				cubeSide.SetColor(CellColor.Blue, -4, 10);
 			});
-		}
-
-		[Test]
-		public void MoveColors_AfterClockwiseTurn()
-		{
-			complexCubeSide.MakeClockwiseTurn();
-
-			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
-			{
-				CellColor.Red, CellColor.Blue, CellColor.White, 
-				CellColor.Blue, CellColor.Orange, CellColor.Red, 
-				CellColor.Green, CellColor.Yellow, CellColor.Green
-			}));
-		}
-
-		[Test]
-		public void MoveColors_AfterNotClockwiseTurn()
-		{
-			complexCubeSide.MakeClockwiseTurn(false);
-
-			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
-			{
-				CellColor.Green, CellColor.Yellow, CellColor.Green, 
-				CellColor.Red, CellColor.Orange, CellColor.Blue, 
-				CellColor.White, CellColor.Blue, CellColor.Red, 
-			}));
-		}
-
-		[Test]
-		public void ReturnReferenceToThis_FromClockwiseMethod()
-		{
-			var currentSide = complexCubeSide.MakeClockwiseTurn();
-
-			Assert.That(currentSide.Colors, Is.EqualTo(complexCubeSide.Colors));
-		}
-
-		[Test]
-		public void ChangeColors_AfterTwiceClockwiceTurn()
-		{
-			complexCubeSide.MakeTwiceTurn();
-
-			Assert.That(complexCubeSide.Colors, Is.EqualTo(new[]
-			{
-				CellColor.Green, CellColor.Blue, CellColor.Red, 
-				CellColor.Yellow, CellColor.Orange, CellColor.Blue, 
-				CellColor.Green, CellColor.Red, CellColor.White
-			}));
 		}
 	}
 }

@@ -53,32 +53,5 @@ namespace MagicCube
 
 			return (row - 1) * 3 + (column - 1);
 		}
-
-		public CubeSide MakeClockwiseTurn(bool isForwardTurn = true)
-		{
-			var newColors = Colors.Clone() as CellColor[];
-			if (newColors == null)
-				throw new NullReferenceException();
-
-			for (var i = 1; i <= 3; ++i)
-				for (var j = 1; j <= 3; ++j)
-				{
-					var color = Colors[ConvertToIndex(i, j)];
-
-					var newRow = isForwardTurn ? j : 4 - j;
-					var newColumn = isForwardTurn ? 4 - i : i;
-					newColors[ConvertToIndex(newRow, newColumn)] = color;
-				}
-
-			Colors = newColors;
-
-			return this;
-		}
-
-		public void MakeTwiceTurn()
-		{
-			MakeClockwiseTurn();
-			MakeClockwiseTurn();
-		}
 	}
 }
