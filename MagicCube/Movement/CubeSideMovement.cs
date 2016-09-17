@@ -6,8 +6,7 @@ namespace MagicCube.Movement
 	{
 		public static CubeSide MakeClockwiseTurn(this CubeSide cubeSide, TurnTo turnTo)
 		{
-			if (turnTo == TurnTo.Up || turnTo == TurnTo.Down)
-				throw new ArgumentOutOfRangeException(nameof(turnTo));
+			CheckСlockwiseTurnDirection(turnTo);
 
 			var oldSide = new CubeSide(cubeSide);
 			var isClockwiseTurn = turnTo == TurnTo.Right;
@@ -23,6 +22,12 @@ namespace MagicCube.Movement
 				}
 
 			return cubeSide;
+		}
+
+		private static void CheckСlockwiseTurnDirection(TurnTo turnTo)
+		{
+			if (turnTo != TurnTo.Right && turnTo != TurnTo.Left)
+				throw new ArgumentOutOfRangeException(nameof(turnTo));
 		}
 
 		public static CubeSide MakeTwiceClockwiseTurn(this CubeSide cubeSide)

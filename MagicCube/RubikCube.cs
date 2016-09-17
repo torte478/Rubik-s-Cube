@@ -4,7 +4,9 @@
 	{
 		private readonly CubeSide[] sides;
 
-		public RubikCube(CubeSide frontSide, CubeSide topSide, CubeSide rightSide, CubeSide backSide, CubeSide downSide, CubeSide leftSide)
+		public RubikCube(
+			CubeSide frontSide, CubeSide topSide,  CubeSide rightSide, 
+			CubeSide backSide,  CubeSide downSide, CubeSide leftSide)
 		{
 			sides = new[]
 			{
@@ -17,16 +19,16 @@
 			};
 		}
 
-		public CubeSide this[SideIndex side] => sides[(int)side];
+		public CubeSide this[SideIndex sideIndex] => sides[(int)sideIndex];
 
-		public CubeSide CloneSide(SideIndex side)
+		public CubeSide CloneSide(SideIndex sideIndex)
 		{
-			return new CubeSide(this[side]);
+			return new CubeSide(this[sideIndex]);
 		}
 
-		public CellColor GetColor(SideIndex side, int row, int column)
+		public CellColor GetColor(SideIndex sideIndex, int rowIndex, int columnIndex)
 		{
-			return this[side].GetColor(row, column);
+			return this[sideIndex].GetColor(rowIndex, columnIndex);
 		}
 	}
 }

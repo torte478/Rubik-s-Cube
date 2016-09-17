@@ -5,11 +5,13 @@ namespace MagicCube
 {
 	public class CubeSide
 	{
-		public CellColor[] Colors { get; private set; }
+		private const int cellCount = 9;
+
+		public CellColor[] Colors { get; }
 
 		public CubeSide(CellColor[] colors)
 		{
-			if (colors.Length != 9)
+			if (colors.Length != cellCount)
 				throw new ArgumentOutOfRangeException(nameof(colors));
 
 			Colors = colors;
@@ -18,7 +20,7 @@ namespace MagicCube
 		public CubeSide(CellColor sideColor)
 		{
 			Colors = Enumerable
-				.Range(1, 9)
+				.Range(1, cellCount)
 				.Select(i => sideColor)
 				.ToArray();
 		}
@@ -44,6 +46,8 @@ namespace MagicCube
 			Colors[ConvertToIndex(row, column)] = color;
 		}
 
+		/// <param name="row">from 1 to 3</param>
+		/// <param name="column">from 1 to 3</param>
 		private static int ConvertToIndex(int row, int column)
 		{
 			if (row < 1 || row > 3)
