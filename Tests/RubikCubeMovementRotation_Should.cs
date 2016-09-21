@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Tests
 {
 	[TestFixture]
-	internal class RubikCubeMovementRotate_Should
+	internal class RubikCubeMovementRotation_Should
 	{
 		private RubikCube cube;
 
@@ -16,7 +16,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void ChangeSides_AfterRotateToLeftFirstLayer()
+		public void ChangeSides_AfterRotationToLeftFirstLayer()
 		{
 			var nextCube = cube.MakeRotation(TurnTo.Left, Layer.First);
 
@@ -30,7 +30,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void ChangeSides_AfterRotateToLeftThirdLayer()
+		public void ChangeSides_AfterRotationToLeftThirdLayer()
 		{
 			var nextCube = cube.MakeRotation(TurnTo.Left, Layer.Third);
 
@@ -44,7 +44,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void ChangeSides_AfterRotateToRightSecondLayer()
+		public void ChangeSides_AfterRotationToRightSecondLayer()
 		{
 			var nextCube = cube.MakeRotation(TurnTo.Right, Layer.Second);
 
@@ -59,7 +59,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void ChangeSides_AfterRotateToUpFirstLayer()
+		public void ChangeSides_AfterRotationToUpFirstLayer()
 		{
 			var nextCube = cube.MakeRotation(TurnTo.Up, Layer.First);
 
@@ -73,7 +73,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void ChangeSides_AfterRotateToDownThirdLayer()
+		public void ChangeSides_AfterRotationToDownThirdLayer()
 		{
 			var nextCube = cube.MakeRotation(TurnTo.Down, Layer.Third);
 
@@ -87,7 +87,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void MakeClockwiseRotateOfTop_AfterRotateToLeftFirstLayer()
+		public void MakeClockwiseRotationOfTop_AfterRotationToLeftFirstLayer()
 		{
 			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Top, 1, 1, CellColor.Red);
 
@@ -97,7 +97,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void MakeNotClockwiseRotateOfDown_AfterRotateToLeftThirdLayer()
+		public void MakeNotClockwiseRotationOfDown_AfterRotationToLeftThirdLayer()
 		{
 			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Down, 1, 1, CellColor.White);
 

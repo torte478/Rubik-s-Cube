@@ -9,6 +9,7 @@ namespace MagicCube
 
 		public CellColor[] Colors { get; }
 
+		/// <param name="colors">Should contains 9 elements</param>
 		public CubeSide(CellColor[] colors)
 		{
 			if (colors.Length != cellCount)

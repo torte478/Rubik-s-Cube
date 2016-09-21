@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="CellColor.cs" />
     <Compile Include="CubeSide.cs" />
+    <Compile Include="Movement\RubikCubeMovementDetails.cs" />
     <Compile Include="Movement\CubeSideMovement.cs" />
     <Compile Include="Movement\Layer.cs" />
     <Compile Include="RubikCube.cs" />
