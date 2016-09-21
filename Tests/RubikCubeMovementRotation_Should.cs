@@ -105,5 +105,35 @@ namespace Tests
 
 			Assert.That(nextState[SideIndex.Down].GetColor(3, 1), Is.EqualTo(CellColor.White));
 		}
+
+		[Test]
+		public void NotMakeRotationOfUp_AfterRotationOfSecondLayer()
+		{
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Top, 1, 1, CellColor.Red);
+
+			var nextState = testCube.MakeRotation(TurnTo.Right, Layer.Second);
+
+			Assert.That(nextState[SideIndex.Top].GetColor(1, 1), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void NotMakeRotationOfDown_AfterRotationOfFirstLayer()
+		{
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Down, 1, 1, CellColor.Red);
+
+			var nextState = testCube.MakeRotation(TurnTo.Left, Layer.First);
+
+			Assert.That(nextState[SideIndex.Down].GetColor(1, 1), Is.EqualTo(CellColor.Red));
+		}
+
+		[Test]
+		public void NotMakeRotationOfRight_AfterRotationOFFirstLayer()
+		{
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Right, 1, 1, CellColor.White);
+
+			var nextState = testCube.MakeRotation(TurnTo.Up, Layer.First);
+
+			Assert.That(nextState[SideIndex.Right].GetColor(1, 1), Is.EqualTo(CellColor.White));
+		}
 	}
 }
