@@ -1,3 +1,4 @@
+using System;
 using MagicCube;
 using MagicCube.Movement;
 using NUnit.Framework;
@@ -134,6 +135,31 @@ namespace Tests
 			var nextState = testCube.MakeRotation(TurnTo.Up, Layer.First);
 
 			Assert.That(nextState[SideIndex.Right].GetColor(1, 1), Is.EqualTo(CellColor.White));
+		}
+
+		[Test]
+		[TestCase(TurnTo.Right, 1, 3)]
+		[TestCase(TurnTo.Left, 3, 1)]
+		public void MakeClockwiseRotationOfFront_ForClockwiseRotation(TurnTo turnTo, int row, int column)
+		{
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Front, 1, 1, CellColor.Blue);
+
+			var nextState = testCube.MakeClockwiseRotation(turnTo);
+
+			Assert.That(nextState[SideIndex.Front].GetColor(row, column), Is.EqualTo(CellColor.Blue));
+		}
+
+		[Test]
+		[TestCase(TurnTo.Up)]
+		[TestCase(TurnTo.Down)]
+		public void ThrowInvalidOperation_ForHorizontalClockwiseRotationTo(TurnTo turnTo)
+		{
+			var testCube = TestHelper.GetCompleteCube();
+
+			Assert.Throws<InvalidOperationException>(() =>
+			{
+				testCube.MakeClockwiseRotation(turnTo);
+			});
 		}
 	}
 }

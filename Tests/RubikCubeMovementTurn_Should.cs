@@ -141,21 +141,15 @@ namespace Tests
 		}
 
 		[Test]
-		public void ThrowArgumentOutOfRangeException_ForTurnToCornerUp()
+		[TestCase(TurnTo.Up, SideIndex.Top)]
+		[TestCase(TurnTo.Down, SideIndex.Down)]
+		public void MakeTurn_ForVerticalTurnToCorner(TurnTo turnTo, SideIndex sideIndex)
 		{
-			Assert.Throws<ArgumentOutOfRangeException>(() =>
-			{
-				cube.MakeTurnToCorner(TurnTo.Up);
-			});
-		}
+			var testCube = TestHelper.GetCubeWithConcreteCell(SideIndex.Front, 2, 1, CellColor.Red);
 
-		[Test]
-		public void ThrowArgumentOutOfRangeException_ForTurnToCornerDown()
-		{
-			Assert.Throws<ArgumentOutOfRangeException>(() =>
-			{
-				cube.MakeTurnToCorner(TurnTo.Down);
-			});
+			var nextCube = testCube.MakeTurnToCorner(turnTo);
+
+			Assert.That(nextCube[sideIndex].GetColor(2, 1), Is.EqualTo(CellColor.Red));
 		}
 	}
 }

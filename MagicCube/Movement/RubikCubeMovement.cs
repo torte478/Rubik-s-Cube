@@ -11,6 +11,19 @@ namespace MagicCube.Movement
 				: rubikCube.MakeVerticalTurn(turnTo);
 		}
 
+		public static RubikCube MakeTurnToCorner(this RubikCube rubikCube, TurnTo turnTo)
+		{
+			if (turnTo == TurnTo.Up || turnTo == TurnTo.Down)
+			{
+				return rubikCube.MakeTurn(turnTo);
+			}
+			else
+				return rubikCube
+					.MakeTurn(TurnTo.Down)
+					.MakeTurn(turnTo)
+					.MakeTurn(TurnTo.Up);
+		}
+
 		public static RubikCube MakeRotation(this RubikCube rubikCube, TurnTo turn, Layer layer)
 		{
 			if (turn == TurnTo.Left || turn == TurnTo.Right)
@@ -19,16 +32,17 @@ namespace MagicCube.Movement
 				return rubikCube.MakeVerticalRotation(turn, layer);
 		}
 
+
 		/// <param name="rubikCube"></param>
-		/// <param name="turnTo">Left or Right</param>
-		public static RubikCube MakeTurnToCorner(this RubikCube rubikCube, TurnTo turnTo)
+		/// <param name="turnTo">left or right</param>
+		public static RubikCube MakeClockwiseRotation(this RubikCube rubikCube, TurnTo turnTo)
 		{
 			if (turnTo == TurnTo.Up || turnTo == TurnTo.Down)
-				throw new ArgumentOutOfRangeException(nameof(turnTo));
+				throw new InvalidOperationException("wrong turnTo direction");
 
 			return rubikCube
 				.MakeTurn(TurnTo.Down)
-				.MakeTurn(turnTo)
+				.MakeRotation(turnTo, Layer.Third)
 				.MakeTurn(TurnTo.Up);
 		}
 	}
