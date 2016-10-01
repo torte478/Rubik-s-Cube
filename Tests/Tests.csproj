@@ -45,8 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellColor_Should.cs" />
+    <Compile Include="CommandFactory_Should.cs" />
+    <Compile Include="CubeCommand_Should.cs" />
     <Compile Include="CubeSideMovement_Shoud.cs" />
     <Compile Include="CubeSide_Should.cs" />
+    <Compile Include="PathSearcher_Should.cs" />
     <Compile Include="RubikCubeMovementTurn_Should.cs" />
     <Compile Include="RubikCubeMovementRotation_Should.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
