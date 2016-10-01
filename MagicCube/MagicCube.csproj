@@ -51,6 +51,7 @@
     <Compile Include="RubikCube.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Movement\RubikCubeMovement.cs" />
+    <Compile Include="SearchItem.cs" />
     <Compile Include="SideIndex.cs" />
     <Compile Include="Movement\TurnTo.cs" />
   </ItemGroup>

@@ -53,6 +53,7 @@
     <Compile Include="RubikCubeMovementTurn_Should.cs" />
     <Compile Include="RubikCubeMovementRotation_Should.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchItem_Should.cs" />
     <Compile Include="Side_Should.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
