@@ -49,6 +49,7 @@
     <Compile Include="CubeCommand_Should.cs" />
     <Compile Include="Movement\CubeSideMovement_Shoud.cs" />
     <Compile Include="CubeSide_Should.cs" />
+    <Compile Include="SolutionItem_Should.cs" />
     <Compile Include="PathSearch\PathSearcher_Should.cs" />
     <Compile Include="Movement\RubikCubeMovementTurn_Should.cs" />
     <Compile Include="Movement\RubikCubeMovementRotation_Should.cs" />

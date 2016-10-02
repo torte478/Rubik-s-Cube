@@ -51,12 +51,12 @@ namespace Tests.PathSearch
 		public void ThrowInvalidOperationException_WhenCanNotFindTarget()
 		{
 			var commands = new[] {CommandFactory.GetRotation(TurnTo.Right, Layer.First)};
-			Condition condtition = cube => cube[SideIndex.Front].GetColor(3, 3) != CellColor.Green;
+			Condition condition = cube => cube[SideIndex.Front].GetColor(3, 3) != CellColor.Green;
 
 			Assert.Throws<InvalidOperationException>(() =>
 			{
 				// ReSharper disable once UnusedVariable
-				var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condtition);
+				var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condition);
 			});
 		}
 
@@ -72,9 +72,9 @@ namespace Tests.PathSearch
 		public void ReturnPathFromOneElement_ForSimpleCase()
 		{
 			var commands = new[] {CommandFactory.GetRotation(TurnTo.Right, Layer.First)};
-			Condition condtiion = cube => cube[SideIndex.Right].GetColor(1, 1) == CellColor.Green;
+			Condition condition = cube => cube[SideIndex.Right].GetColor(1, 1) == CellColor.Green;
 
-			var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condtiion);
+			var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condition);
 
 			Assert.That(searcher.Path.Count, Is.EqualTo(1));
 		}
@@ -83,13 +83,24 @@ namespace Tests.PathSearch
 		public void HaveSensiblePath_AfterInitialization()
 		{
 			var commands = new[] { CommandFactory.GetRotation(TurnTo.Right, Layer.First) };
-			Condition condtiion = cube => cube[SideIndex.Right].GetColor(1, 1) == CellColor.Green;
-			var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condtiion);
+			Condition condition = cube => cube[SideIndex.Right].GetColor(1, 1) == CellColor.Green;
+			var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condition);
 
 			var testCube = TestHelper.GetCompleteCube();
 			testCube = searcher.Path.Aggregate(testCube, (current, cubeCommand) => cubeCommand.Execute(current));
 
-			Assert.That(condtiion(testCube), Is.True);
+			Assert.That(condition(testCube), Is.True);
+		}
+
+		[Test]
+		public void HaveGoalState_AfterInitialization()
+		{
+			var commands = new[] { CommandFactory.GetRotation(TurnTo.Right, Layer.First) };
+			Condition condition = cube => cube[SideIndex.Right].GetColor(1, 1) == CellColor.Green;
+
+			var searcher = new PathSearhcer(TestHelper.GetCompleteCube(), commands, condition);
+
+			Assert.That(condition(searcher.GoalState), Is.True);
 		}
 	}
 }

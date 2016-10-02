@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MagicCube.Movement;
 using MagicCube.PathSearch;
-
-using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
 
 namespace MagicCube
 {
 	public class Solver
 	{
-		public List<CubeCommand> FindAndReplaceUpperMiddleToStartPonint(RubikCube startCube)
+		public SolutionItem FindAndReplaceUpperMiddleToStartPonint(RubikCube startCube)
 		{
 			var searcher = new PathSearhcer(
 				startCube,
@@ -17,18 +14,23 @@ namespace MagicCube
 				{
 					CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
 					CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
-					MoveUpperMiddleToLowerMiddle
+					SolveAlgorithm.MoveMiddleUpperFrontToLower,
+					SolveAlgorithm.MoveMiddleUpperRightToLower,
+					SolveAlgorithm.MoveMiddleUpperLeftToLower,
+					SolveAlgorithm.MoveMiddleUpperBackToLower,
+					CommandFactory.GetClockwiseRotation(TurnTo.Right),
+					CommandFactory.GetClockwiseRotation(TurnTo.Left),
+					SolveAlgorithm.MoveMiddleSecondRightToLower,
+					SolveAlgorithm.MoveMiddleSecondLeftToLower
 				},
 				IsUpperMiddleOnStartPoint);
 
-			return searcher.Path;
+			return new SolutionItem
+			{
+				Actions = searcher.Path,
+				GoalState = searcher.GoalState
+			};
 		}
-
-		private static readonly CubeCommand MoveUpperMiddleToLowerMiddle = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeClockwiseRotation(TurnTo.Right),
-			cube => cube.MakeClockwiseRotation(TurnTo.Right),
-		});
 
 		private static bool IsUpperMiddleOnStartPoint(RubikCube cube)
 		{

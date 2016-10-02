@@ -9,8 +9,9 @@ namespace MagicCube.PathSearch
 		private const int startStateIndex = 0;
 		private const int MaxHandledElementsCount = 100000;
 
-		public List<SearchItem> HandledStates { get; private set; }
-		public List<CubeCommand> Path { get; private set; }
+		public List<SearchItem> HandledStates { get; }
+		public List<CubeCommand> Path { get; }
+		public RubikCube GoalState => HandledStates.Last().State;
 
 		public PathSearhcer(RubikCube startState, CubeCommand[] commands, Func<RubikCube, bool> goalCondition)
 		{
