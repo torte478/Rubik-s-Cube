@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using MagicCube;
+﻿using MagicCube;
 
 namespace Tests
 {
@@ -20,15 +18,8 @@ namespace Tests
 
 		public static RubikCube GetCubeWithConcreteCell(SideIndex sideIndex, int rowIndex, int columnIndex, CellColor color)
 		{
-			var cube = GetCompleteCube();
-
-			var newSides = Enum.GetValues(typeof(SideIndex)).Cast<SideIndex>()
-				.Select(curentSide => cube.CloneSide(curentSide))
-				.ToArray();
-
-			newSides[(int)sideIndex].SetColor(color, rowIndex, columnIndex);
-
-			return new RubikCube(newSides[0], newSides[1], newSides[2], newSides[3], newSides[4], newSides[5]);
+			return GetCompleteCube()
+				.SetColor(sideIndex, rowIndex, columnIndex, color);
 		}
 	}
 }

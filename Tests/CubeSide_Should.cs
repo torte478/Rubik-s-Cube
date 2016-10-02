@@ -127,5 +127,15 @@ namespace Tests
 
 			Assert.That(cubeSide.IsFill(CellColor.White), Is.False);
 		}
+
+		[Test]
+		[TestCase(CellColor.Red)]
+		[TestCase(CellColor.Blue)]
+		public void ReturnColorOfCenter_FromGetCenterColor(CellColor color)
+		{
+			cubeSide.SetColor(color, 2, 2);
+
+			Assert.That(cubeSide.GetCenterColor(), Is.EqualTo(color));
+		}
 	}
 }

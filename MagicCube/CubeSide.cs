@@ -63,5 +63,10 @@ namespace MagicCube
 		{
 			return Colors.All(curColor => curColor == color);
 		}
+
+		public CellColor GetCenterColor()
+		{
+			return GetColor(2, 2);
+		}
 	}
 }
