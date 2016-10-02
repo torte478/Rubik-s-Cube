@@ -1,9 +1,8 @@
-﻿using System;
-using MagicCube;
+﻿using MagicCube;
 using MagicCube.Movement;
 using NUnit.Framework;
 
-namespace Tests
+namespace Tests.Movement
 {
 	[TestFixture]
 	internal class RubikCubeMovementTurn_Should

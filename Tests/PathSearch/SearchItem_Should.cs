@@ -1,9 +1,10 @@
 ﻿using System;
 using MagicCube;
 using MagicCube.Movement;
+using MagicCube.PathSearch;
 using NUnit.Framework;
 
-namespace Tests
+namespace Tests.PathSearch
 {
 	[TestFixture]
 	internal class SearchItem_Should

@@ -3,7 +3,7 @@ using MagicCube;
 using MagicCube.Movement;
 using NUnit.Framework;
 
-namespace Tests
+namespace Tests.Movement
 {
 	[TestFixture]
 	internal class RubikCubeMovementRotation_Should

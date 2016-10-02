@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MagicCube
+namespace MagicCube.PathSearch
 {
 	public class SearchItem
 	{

@@ -2,11 +2,11 @@
 using System.Linq;
 using MagicCube;
 using MagicCube.Movement;
+using MagicCube.PathSearch;
 using NUnit.Framework;
-
 using Condition = System.Func<MagicCube.RubikCube, bool>;
 
-namespace Tests
+namespace Tests.PathSearch
 {
 	[TestFixture]
 	internal class PathSearcher_Should

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagicCube
+namespace MagicCube.PathSearch
 {
 	public class PathSearhcer
 	{
