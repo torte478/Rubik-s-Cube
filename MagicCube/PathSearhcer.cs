@@ -6,18 +6,25 @@ namespace MagicCube
 {
 	public class PathSearhcer
 	{
+		private const int startStateIndex = 0;
 		private const int MaxHandledElementsCount = 100000;
 
 		public List<SearchItem> HandledStates { get; private set; }
-		
+		public List<CubeCommand> Path { get; private set; }
+
 		public PathSearhcer(RubikCube startState, CubeCommand[] commands, Func<RubikCube, bool> goalCondition)
 		{
-			MakeSearch(startState, commands, goalCondition);
+			HandledStates = new List<SearchItem> { new SearchItem(startState, startStateIndex, null) };
+			Path = new List<CubeCommand>();
+
+			MakeSearch(commands, goalCondition);
+
+			ReconstructPath();
 		}
 
-		private void MakeSearch(RubikCube startState, CubeCommand[] commands, Func<RubikCube, bool> goalCondition)
+		private void MakeSearch(CubeCommand[] commands, Func<RubikCube, bool> goalCondition)
 		{
-			var nextStateIndices = GetInitializedQueue(startState);
+			var nextStateIndices = GetInitializedQueue();
 
 			while (IsFindRespondState(goalCondition) == false)
 			{
@@ -31,7 +38,8 @@ namespace MagicCube
 				{
 					HandledStates.Add(new SearchItem(
 						command.Execute(currentState),
-						currentStateIndex));
+						currentStateIndex,
+						command));
 
 					if (IsFindRespondState(goalCondition))
 						break;
@@ -41,17 +49,29 @@ namespace MagicCube
 			}
 		}
 
-		private Queue<int> GetInitializedQueue(RubikCube startState)
+		private static Queue<int> GetInitializedQueue()
 		{
-			HandledStates = new List<SearchItem> { new SearchItem(startState, 0) };
 			var nextStateIndices = new Queue<int>();
-			nextStateIndices.Enqueue(0);
+			nextStateIndices.Enqueue(startStateIndex);
 			return nextStateIndices;
 		}
 
 		private bool IsFindRespondState(Func<RubikCube, bool> goalCondition)
 		{
 			return goalCondition(HandledStates.Last().State);
+		}
+
+		private void ReconstructPath()
+		{
+			var currentIndex = HandledStates.Count - 1;
+
+			while (currentIndex != startStateIndex)
+			{
+				Path.Add(HandledStates[currentIndex].Command);
+				currentIndex = HandledStates[currentIndex].ParentIndex;
+			}
+
+			Path.Reverse();
 		}
 	}
 }
