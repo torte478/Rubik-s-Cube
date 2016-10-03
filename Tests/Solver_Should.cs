@@ -31,6 +31,8 @@ namespace Tests
 			cube[SideIndex.Left].SetColor(CellColor.Red, 2, 2);
 		}
 
+		#region UpperLayerSolutionTests
+
 		#region UpperCrossSolutionTests
 
 		[Test]
@@ -238,6 +240,27 @@ namespace Tests
 
 			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
 			Assert.That(AlgorithmBase.IsSolvedUpperCorners(testCube), Is.True);
+		}
+
+		#endregion
+
+		[Test]
+		public void SolveUpperLayer()
+		{
+			var solution = solver.SolveUpperLayer(TestHelper.GetNotSolvedCube());
+
+			Assert.That(AlgorithmBase.IsSolvedUpperLayer(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void ReturnCorrectActions_ForUpperLayerSolution()
+		{
+			var testCube = TestHelper.GetNotSolvedCube();
+
+			var solution = solver.SolveUpperLayer(testCube);
+
+			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
+			Assert.That(AlgorithmBase.IsSolvedUpperLayer(testCube), Is.True);
 		}
 
 		#endregion

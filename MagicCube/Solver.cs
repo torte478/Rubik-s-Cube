@@ -21,6 +21,8 @@ namespace MagicCube
 			};
 		}
 
+		#region UpperLayerSolution
+
 		#region UpperCrossSolution
 
 		public SolutionItem MoveUpperMiddleToStart(RubikCube cube)
@@ -185,6 +187,20 @@ namespace MagicCube
 					.Concat(solveLeftItem.Actions)
 					.ToList(),
 				GoalState = solveLeftItem.GoalState
+			};
+		}
+
+		#endregion
+
+		public SolutionItem SolveUpperLayer(RubikCube cube)
+		{
+			var solveCross = SolveUpperCross(cube);
+			var solveCorners = SolveUpperCorners(solveCross.GoalState);
+
+			return new SolutionItem
+			{
+				Actions = solveCross.Actions.Concat(solveCorners.Actions).ToList(),
+				GoalState = solveCorners.GoalState
 			};
 		}
 

@@ -7,6 +7,8 @@ namespace MagicCube
 {
 	public static class AlgorithmBase
 	{
+		#region UpperLayerSolution
+
 		#region UpperCrossSolution
 
 		#region MoveUpperMiddleToStart
@@ -217,6 +219,13 @@ namespace MagicCube
 			                           && cube[SideIndex.Left].GetColor(1, 3) == cube[SideIndex.Left].GetCenterColor();
 
 			return isTopSolved && isLeftCornersSolved && isRightCornersSolved;
+		}
+
+		#endregion
+
+		public static bool IsSolvedUpperLayer(RubikCube cube)
+		{
+			return IsSolvedUpperCross(cube) && IsSolvedUpperCorners(cube);
 		}
 
 		#endregion
