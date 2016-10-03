@@ -47,7 +47,7 @@
     <Compile Include="Movement\RubikCubeMovementDetails.cs" />
     <Compile Include="Movement\CubeSideMovement.cs" />
     <Compile Include="Movement\Layer.cs" />
-    <Compile Include="SolutionItem.cs" />
+    <Compile Include="CubeSolution\SolutionItem.cs" />
     <Compile Include="PathSearch\PathSearhcer.cs" />
     <Compile Include="RubikCube.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,8 +55,8 @@
     <Compile Include="PathSearch\SearchItem.cs" />
     <Compile Include="SideIndex.cs" />
     <Compile Include="Movement\TurnTo.cs" />
-    <Compile Include="AlgorithmBase.cs" />
-    <Compile Include="Solver.cs" />
+    <Compile Include="CubeSolution\AlgorithmBase.cs" />
+    <Compile Include="CubeSolution\Solver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

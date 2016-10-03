@@ -4,9 +4,7 @@ using System.Linq;
 using MagicCube.Movement;
 using MagicCube.PathSearch;
 
-using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
-
-namespace MagicCube
+namespace MagicCube.CubeSolution
 {
 	public class Solver
 	{
@@ -18,6 +16,40 @@ namespace MagicCube
 			{
 				Actions = searcher.Path,
 				GoalState = searcher.GoalState
+			};
+		}
+
+		private static SolutionItem FindAndMoveToPointIfNeed(
+			RubikCube cube, 
+			bool isNotNeedMovement, 
+			Func<RubikCube, SolutionItem> moveToPoint)
+		{
+			if (isNotNeedMovement)
+			{
+				return new SolutionItem
+				{
+					Actions = new List<CubeCommand>(),
+					GoalState = cube
+				};
+			}
+			else
+			{
+				return moveToPoint(cube);
+			}
+		}
+
+		private static SolutionItem FindAndMove(
+			RubikCube cube,
+			Func<RubikCube, SolutionItem> moveToStart,
+			Func<RubikCube, SolutionItem> moveToPoint)
+		{
+			var moveToStartItem = moveToStart(cube);
+			var moveToPointItem = moveToPoint(moveToStartItem.GoalState);
+
+			return new SolutionItem
+			{
+				Actions = moveToStartItem.Actions.Concat(moveToPointItem.Actions).ToList(),
+				GoalState = moveToPointItem.GoalState
 			};
 		}
 
@@ -59,30 +91,15 @@ namespace MagicCube
 
 		public SolutionItem SolveUpperMiddle(RubikCube cube)
 		{
-			if (AlgorithmBase.IsUpperMiddleOnPoint(cube))
-			{
-				return new SolutionItem
-				{
-					Actions = new List<CubeCommand>(),
-					GoalState = cube
-				};
-			}
-			else
-			{
-				return FindAndMoveUpperMiddleToStart(cube);
-			}
+			return FindAndMoveToPointIfNeed(
+				cube, 
+				AlgorithmBase.IsUpperMiddleOnPoint(cube), 
+				FindAndMoveUpperMiddleToPoint);
 		}
 
-		private SolutionItem FindAndMoveUpperMiddleToStart(RubikCube cube)
+		private SolutionItem FindAndMoveUpperMiddleToPoint(RubikCube cube)
 		{
-			var moveToStartItem = MoveUpperMiddleToStart(cube);
-			var moveToPointItem = MoveUpperMiddleFromStartToPoint(moveToStartItem.GoalState);
-
-			return new SolutionItem
-			{
-				Actions = moveToStartItem.Actions.Concat(moveToPointItem.Actions).ToList(),
-				GoalState = moveToPointItem.GoalState
-			};
+			return FindAndMove(cube, MoveUpperMiddleToStart, MoveUpperMiddleFromStartToPoint);
 		}
 
 		public SolutionItem SolveUpperCross(RubikCube cube)
@@ -141,32 +158,15 @@ namespace MagicCube
 
 		public SolutionItem SolveUpperCorner(RubikCube cube)
 		{
-			if (AlgorithmBase.IsUpperCornerOnPoint(cube))
-			{
-				return new SolutionItem
-				{
-					Actions = new List<CubeCommand>(),
-					GoalState = cube
-				};
-			}
-			else
-			{
-				return FindAndMoveUpperCornerToPoint(cube);
-			}
+			return FindAndMoveToPointIfNeed(
+				cube,
+				AlgorithmBase.IsUpperCornerOnPoint(cube),
+				FindAndMoveUpperCornerToPoint);
 		}
 
 		private SolutionItem FindAndMoveUpperCornerToPoint(RubikCube cube)
 		{
-			var moveToStartItem = MoveUpperCornerToStart(cube);
-			var moveToPointItem = MoveUpperCornerFromStartToPoint(moveToStartItem.GoalState);
-
-			return new SolutionItem
-			{
-				Actions = moveToStartItem.Actions
-					.Concat(moveToPointItem.Actions)
-					.ToList(),
-				GoalState = moveToPointItem.GoalState
-			};
+			return FindAndMove(cube, MoveUpperCornerToStart, MoveUpperCornerFromStartToPoint);
 		}
 
 		public SolutionItem SolveUpperCorners(RubikCube cube)

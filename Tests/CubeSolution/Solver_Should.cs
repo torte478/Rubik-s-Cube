@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using MagicCube;
+using MagicCube.CubeSolution;
 using NUnit.Framework;
 
-namespace Tests
+namespace Tests.CubeSolution
 {
 	[TestFixture]
 	internal class Solver_Should

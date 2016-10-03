@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using MagicCube.Movement;
-
 using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
 
-namespace MagicCube
+namespace MagicCube.CubeSolution
 {
 	public static class AlgorithmBase
 	{

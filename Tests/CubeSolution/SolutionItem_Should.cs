@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using MagicCube;
+using MagicCube.CubeSolution;
 using NUnit.Framework;
 
-namespace Tests
+namespace Tests.CubeSolution
 {
 	[TestFixture]
 	internal class SolutionItem_Should

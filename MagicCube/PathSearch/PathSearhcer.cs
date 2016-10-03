@@ -33,12 +33,11 @@ namespace MagicCube.PathSearch
 					throw new InvalidOperationException("searcher can not find path");
 
 				var currentStateIndex = nextStateIndices.Dequeue();
-				var currentState = HandledStates[currentStateIndex].State;
 
 				foreach (var command in commands)
 				{
 					HandledStates.Add(new SearchItem(
-						command.Execute(currentState),
+						command.Execute(HandledStates[currentStateIndex].State),
 						currentStateIndex,
 						command));
 

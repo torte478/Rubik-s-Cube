@@ -49,14 +49,14 @@
     <Compile Include="CubeCommand_Should.cs" />
     <Compile Include="Movement\CubeSideMovement_Shoud.cs" />
     <Compile Include="CubeSide_Should.cs" />
-    <Compile Include="SolutionItem_Should.cs" />
+    <Compile Include="CubeSolution\SolutionItem_Should.cs" />
     <Compile Include="PathSearch\PathSearcher_Should.cs" />
     <Compile Include="Movement\RubikCubeMovementTurn_Should.cs" />
     <Compile Include="Movement\RubikCubeMovementRotation_Should.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PathSearch\SearchItem_Should.cs" />
     <Compile Include="Side_Should.cs" />
-    <Compile Include="Solver_Should.cs" />
+    <Compile Include="CubeSolution\Solver_Should.cs" />
     <Compile Include="TestCubeConstructor.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
