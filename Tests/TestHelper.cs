@@ -21,5 +21,46 @@ namespace Tests
 			return GetCompleteCube()
 				.SetColor(sideIndex, rowIndex, columnIndex, color);
 		}
+
+		public static RubikCube GetNotSolvedCube()
+		{
+			return new RubikCube(
+				new CubeSide(new[]
+				{
+					CellColor.White, CellColor.Blue, CellColor.Yellow,
+					CellColor.Yellow, CellColor.Green, CellColor.White,
+					CellColor.Blue, CellColor.Green, CellColor.Green
+				}),
+				new CubeSide(new[]
+				{
+					CellColor.Yellow, CellColor.Yellow, CellColor.Orange,
+					CellColor.Red, CellColor.White, CellColor.Green,
+					CellColor.Green, CellColor.Green, CellColor.White
+				}),
+				new CubeSide(new[]
+				{
+					CellColor.Red, CellColor.Orange, CellColor.Green,
+					CellColor.Yellow, CellColor.Orange, CellColor.Orange,
+					CellColor.Red, CellColor.Red, CellColor.Yellow
+				}),
+				new CubeSide(new[]
+				{
+					CellColor.Blue, CellColor.Blue, CellColor.White,
+					CellColor.White, CellColor.Yellow, CellColor.Yellow,
+					CellColor.Blue, CellColor.Green, CellColor.Blue
+				}),
+				new CubeSide(new[]
+				{
+					CellColor.Red, CellColor.Red, CellColor.White,
+					CellColor.Blue, CellColor.Blue, CellColor.White,
+					CellColor.Red, CellColor.White, CellColor.Orange
+				}),
+				new CubeSide(new[]
+				{
+					CellColor.Orange, CellColor.Blue, CellColor.Orange,
+					CellColor.Orange, CellColor.Red, CellColor.Red,
+					CellColor.Yellow, CellColor.Orange, CellColor.Green
+				}));
+		}
 	}
 }

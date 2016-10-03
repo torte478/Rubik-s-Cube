@@ -55,7 +55,7 @@
     <Compile Include="PathSearch\SearchItem.cs" />
     <Compile Include="SideIndex.cs" />
     <Compile Include="Movement\TurnTo.cs" />
-    <Compile Include="SolveAlgorithm.cs" />
+    <Compile Include="AlgorithmBase.cs" />
     <Compile Include="Solver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
