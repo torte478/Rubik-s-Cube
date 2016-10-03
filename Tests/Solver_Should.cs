@@ -31,8 +31,10 @@ namespace Tests
 			cube[SideIndex.Left].SetColor(CellColor.Red, 2, 2);
 		}
 
+		#region UpperCrossSolutionTests
+
 		[Test]
-		public void HaveStartState_WhenUpperMiddleOnRightPlace()
+		public void ReturnStartState_WhenUpperMiddleOnStart()
 		{
 			cube = cube
 				.SetColor(SideIndex.Down, 1, 2, CellColor.White)
@@ -77,7 +79,7 @@ namespace Tests
 				.SetColor(SideIndex.Front, 3, 2, CellColor.Green)
 				.SetColor(SideIndex.Down, 1, 2, CellColor.White);
 
-			var solution = solver.MoveUpperMiddleToPoint(cube);
+			var solution = solver.MoveUpperMiddleFromStartToPoint(cube);
 			
 			Assert.That(solution.Actions.Count, Is.EqualTo(2));
 		}
@@ -89,13 +91,13 @@ namespace Tests
 				.SetColor(SideIndex.Front, 3, 2, CellColor.White)
 				.SetColor(SideIndex.Down, 1, 2, CellColor.Green);
 
-			var solution = solver.MoveUpperMiddleToPoint(cube);
+			var solution = solver.MoveUpperMiddleFromStartToPoint(cube);
 
 			Assert.That(solution.Actions.Count, Is.EqualTo(1));
 		}
 
 		[Test]
-		public void DoNothing_WhenUpperMiddleOnPlace()
+		public void DoNothing_WhenUpperMiddleSolved()
 		{
 			cube = cube
 				.SetColor(SideIndex.Front, 1, 2, CellColor.Green)
@@ -107,7 +109,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void SolveUpperMiddle_WhenUpperMiddleOnWrongPlace()
+		public void SolveUpperMiddle_WhenUpperMiddleOnWrongPoint()
 		{
 			cube = cube
 				.SetColor(SideIndex.Front, 2, 3, CellColor.White)
@@ -137,5 +139,107 @@ namespace Tests
 			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
 			Assert.That(AlgorithmBase.IsSolvedUpperCross(testCube), Is.True);
 		}
+
+		#endregion
+
+		#region UpperCornersSolutionTests
+
+		[Test]
+		public void ReturnStartState_WhenUpperCornerOnStart()
+		{
+			cube = cube
+				.SetColor(SideIndex.Front, 3, 3, CellColor.Green)
+				.SetColor(SideIndex.Down, 1, 3, CellColor.Orange)
+				.SetColor(SideIndex.Right, 3, 1, CellColor.White);
+
+			var solution = solver.MoveUpperCornerToStart(cube);
+
+			Assert.That(solution.Actions.Count, Is.EqualTo(0));
+		}
+
+		[Test]
+		[TestCase(SideIndex.Down, 3, 3, SideIndex.Right, 3, 3, SideIndex.Back, 3, 1, 1)]
+		[TestCase(SideIndex.Down, 1, 1, SideIndex.Left, 3, 3, SideIndex.Front, 3, 1, 1)]
+		[TestCase(SideIndex.Right, 1, 1, SideIndex.Front, 1, 3, SideIndex.Top, 3, 3, 1)]
+		[TestCase(SideIndex.Top, 1, 3, SideIndex.Back, 1, 1, SideIndex.Right, 1, 3, 1)]
+		[TestCase(SideIndex.Top, 1, 1, SideIndex.Left, 1, 1, SideIndex.Back, 1, 3, 2)]
+		[TestCase(SideIndex.Front, 1, 1, SideIndex.Left, 1, 3, SideIndex.Top, 3, 1, 1)]
+		public void MoveUpperCorner_ToStart(
+			SideIndex firstSideIndex, int firstRow, int firstColumn,
+			SideIndex secondSideIndex, int secondRow, int secondColumn,
+			SideIndex thirdSideIndex, int thirdRow, int thirdColumn,
+			int expectedActionCount)
+		{
+			cube = cube
+				.SetColor(firstSideIndex, firstRow, firstColumn, CellColor.Green)
+				.SetColor(secondSideIndex, secondRow, secondColumn, CellColor.White)
+				.SetColor(thirdSideIndex, thirdRow, thirdColumn, CellColor.Orange);
+
+			var solution = solver.MoveUpperCornerToStart(cube);
+
+			Assert.That(solution.Actions.Count, Is.EqualTo(expectedActionCount));
+		}
+
+		[Test]
+		[TestCase(SideIndex.Down, 1, 3, SideIndex.Front, 3, 3, SideIndex.Right, 3, 1, 1)]
+		[TestCase(SideIndex.Front, 3, 3, SideIndex.Right, 3, 1, SideIndex.Down, 1, 3, 1)]
+		[TestCase(SideIndex.Right, 3, 1, SideIndex.Down, 1, 3, SideIndex.Front, 3, 3, 2)]
+		public void MoveUpperCornerToPoint_FromStart(
+			SideIndex firstSideIndex, int firstRow, int firstColumn,
+			SideIndex secondSideIndex, int secondRow, int secondColumn,
+			SideIndex thirdSideIndex, int thirdRow, int thirdColumn,
+			int expectedActionCount)
+		{
+			cube = cube
+				.SetColor(firstSideIndex, firstRow, firstColumn, CellColor.Green)
+				.SetColor(secondSideIndex, secondRow, secondColumn, CellColor.White)
+				.SetColor(thirdSideIndex, thirdRow, thirdColumn, CellColor.Orange);
+
+			var solution = solver.MoveUpperCornerFromStartToPoint(cube);
+
+			Assert.That(solution.Actions.Count, Is.EqualTo(expectedActionCount));
+		}
+
+		[Test]
+		public void DoNothing_WhenUpperCornerSolved()
+		{
+			cube = cube
+				.SetColor(SideIndex.Front, 1, 3, CellColor.Green)
+				.SetColor(SideIndex.Top, 3, 3, CellColor.White)
+				.SetColor(SideIndex.Right, 1, 1, CellColor.Orange);
+
+			var solution = solver.SolveUpperCorner(cube);
+
+			Assert.That(solution.Actions.Count, Is.EqualTo(0));
+		}
+
+		[Test]
+		public void SolveUpperCorner()
+		{
+			var solution = solver.SolveUpperCorner(TestHelper.GetNotSolvedCube());
+
+			Assert.That(AlgorithmBase.IsUpperCornerOnPoint(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void SolveUpperCorners()
+		{
+			var solution = solver.SolveUpperCorners(TestHelper.GetNotSolvedCube());
+
+			Assert.That(AlgorithmBase.IsSolvedUpperCorners(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void ReturnCorrectActions_ForUpperCornersSolution()
+		{
+			var testCube = TestHelper.GetNotSolvedCube();
+
+			var solution = solver.SolveUpperCorners(testCube);
+
+			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
+			Assert.That(AlgorithmBase.IsSolvedUpperCorners(testCube), Is.True);
+		}
+
+		#endregion
 	}
 }
