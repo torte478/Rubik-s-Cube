@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MagicCube.Movement;
 using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
 
@@ -171,6 +172,49 @@ namespace MagicCube.CubeSolution
 			return IsSolvedUpperCross(cube) && IsSolvedUpperCorners(cube);
 		}
 
-		#endregion
-	}
+        #endregion
+
+        public static bool IsMiddleMiddleOnStart(RubikCube cube)
+        {
+            var availableColors = new[]
+            {
+                cube[SideIndex.Front].GetCenterColor(),
+                cube[SideIndex.Right].GetCenterColor()
+            };
+
+            return availableColors.Contains(cube[SideIndex.Front].GetColor(3, 2))
+                   && availableColors.Contains(cube[SideIndex.Down].GetColor(1, 2));
+        }
+
+        public static readonly CubeCommand MoveCorrectOrientedMiddleMiddleToPoint = new CubeCommand(new CubeAction[]
+        {
+            c => c.MakeRotation(TurnTo.Left, Layer.Third),
+            c => c.MakeRotation(TurnTo.Down, Layer.Third),
+            c => c.MakeRotation(TurnTo.Right, Layer.Third),
+            c => c.MakeRotation(TurnTo.Up, Layer.Third),
+            c => c.MakeRotation(TurnTo.Right, Layer.Third),
+            c => c.MakeClockwiseRotation(TurnTo.Right),
+            c => c.MakeRotation(TurnTo.Left, Layer.Third),
+            c => c.MakeClockwiseRotation(TurnTo.Left)
+        });
+
+        public static readonly CubeCommand MoveIncorrectOrientedMiddleMiddleToPoint = new CubeCommand(new CubeAction[]
+        {
+            c => c.MakeRotation(TurnTo.Right, Layer.Third),
+            c => c.MakeRotation(TurnTo.Right, Layer.Third),
+            c => c.MakeClockwiseRotation(TurnTo.Right),
+            c => c.MakeRotation(TurnTo.Left, Layer.Third),
+            c => c.MakeClockwiseRotation(TurnTo.Left),
+            c => c.MakeRotation(TurnTo.Left, Layer.Third),
+            c => c.MakeRotation(TurnTo.Down, Layer.Third),
+            c => c.MakeRotation(TurnTo.Right, Layer.Third),
+            c => c.MakeRotation(TurnTo.Up, Layer.Third)
+        });
+
+        public static bool IsMiddleMiddleOnPoint(RubikCube cube)
+        {
+            return cube[SideIndex.Front].GetColor(2, 3) == cube[SideIndex.Front].GetCenterColor()
+                   && cube[SideIndex.Right].GetColor(2, 1) == cube[SideIndex.Right].GetCenterColor();
+        }
+    }
 }

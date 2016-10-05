@@ -264,6 +264,60 @@ namespace Tests.CubeSolution
 			Assert.That(AlgorithmBase.IsSolvedUpperLayer(testCube), Is.True);
 		}
 
-		#endregion
-	}
+        #endregion
+
+        [Test]
+        public void ReturnStartState_WhenMiddleMiddleOnStart()
+        {
+            cube = cube
+                .SetColor(SideIndex.Front, 3, 2, CellColor.Green)
+                .SetColor(SideIndex.Down, 1, 2, CellColor.Orange);
+
+            var solution = solver.MoveMiddleMiddleToStart(cube);
+
+            Assert.That(solution.Actions.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        [TestCase(SideIndex.Right, 3, 2, SideIndex.Down, 2, 3)]
+        [TestCase(SideIndex.Right, 2, 1, SideIndex.Front, 2, 3)]
+        [TestCase(SideIndex.Right, 2, 3, SideIndex.Back, 2, 1)]
+        public void MoveMiddleMiddle_ToStart(
+            SideIndex firstSideIndex, int firstRow, int firstColumn,
+            SideIndex secondSideIndex, int secondRow, int secondColumn)
+        {
+            cube = cube
+                .SetColor(firstSideIndex, firstRow, firstColumn, CellColor.Green)
+                .SetColor(secondSideIndex, secondRow, secondColumn, CellColor.Orange);
+
+            var solution = solver.MoveMiddleMiddleToStart(cube);
+
+            cube = solution.Actions.Aggregate(cube, (current, solutionAction) => solutionAction.Execute(current));
+            Assert.That(AlgorithmBase.IsMiddleMiddleOnStart(cube), Is.True);
+        }
+
+        [Test]
+        public void MoveMiddleMiddleToPoint_WhenCorrectOriented()
+        {
+            cube = cube
+                .SetColor(SideIndex.Front, 3, 2, CellColor.Green)
+                .SetColor(SideIndex.Down, 1, 2, CellColor.Orange);
+
+            var solution = solver.MoveMiddleMiddleFromStartToPoint(cube);
+
+            Assert.That(solution.Actions.Count, Is.EqualTo(1));
+        }
+        
+        [Test]
+        public void MoveMiddleMiddleToPoint_WhenIncorrectOriented()
+        {
+            cube = cube
+                .SetColor(SideIndex.Front, 3, 2, CellColor.Orange)
+                .SetColor(SideIndex.Down, 1, 2, CellColor.Green);
+
+            var solution = solver.MoveMiddleMiddleFromStartToPoint(cube);
+
+            Assert.That(solution.Actions.Count, Is.EqualTo(1));
+        }
+    }
 }

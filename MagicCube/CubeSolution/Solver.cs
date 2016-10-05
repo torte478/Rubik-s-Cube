@@ -188,20 +188,53 @@ namespace MagicCube.CubeSolution
             return SolveFourSides(cube, SolveUpperCorner);
 		}
 
-		#endregion
+        #endregion
 
-		public SolutionItem SolveUpperLayer(RubikCube cube)
-		{
-			var solveCross = SolveUpperCross(cube);
-			var solveCorners = SolveUpperCorners(solveCross.GoalState);
+        #endregion
 
-			return new SolutionItem
-			{
-				Actions = solveCross.Actions.Concat(solveCorners.Actions).ToList(),
-				GoalState = solveCorners.GoalState
-			};
-		}
+        public SolutionItem SolveUpperLayer(RubikCube cube)
+        {
+            var solveCross = SolveUpperCross(cube);
+            var solveCorners = SolveUpperCorners(solveCross.GoalState);
 
-		#endregion
-	}
+            return new SolutionItem
+            {
+                Actions = solveCross.Actions.Concat(solveCorners.Actions).ToList(),
+                GoalState = solveCorners.GoalState
+            };
+        }
+
+        public SolutionItem MoveMiddleMiddleToStart(RubikCube cube)
+        {
+            var frontColor = cube[SideIndex.Front].GetCenterColor();
+
+            return FindSolution(
+                cube,
+                new CubeCommand[]
+                {
+                    CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
+                    CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
+                    CommandFactory.GetTurn(TurnTo.Right),
+                    CommandFactory.GetTurn(TurnTo.Left),
+                    AlgorithmBase.MoveCorrectOrientedMiddleMiddleToPoint
+                },
+                c =>
+                {
+                    return c[SideIndex.Front].GetCenterColor() == frontColor
+                    && AlgorithmBase.IsMiddleMiddleOnStart(c);
+                });
+        }
+
+        public SolutionItem MoveMiddleMiddleFromStartToPoint(RubikCube cube)
+        {
+            return FindSolution(
+                cube,
+                new[]
+                {
+                    AlgorithmBase.MoveCorrectOrientedMiddleMiddleToPoint,
+                    AlgorithmBase.MoveIncorrectOrientedMiddleMiddleToPoint,
+                },
+                AlgorithmBase.IsMiddleMiddleOnPoint);
+        }
+    }
 }
