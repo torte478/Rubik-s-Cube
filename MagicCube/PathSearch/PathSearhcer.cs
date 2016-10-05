@@ -7,7 +7,7 @@ namespace MagicCube.PathSearch
 	public class PathSearhcer
 	{
 		private const int startStateIndex = 0;
-		private const int MaxHandledElementsCount = 100000;
+		private const int MaxHandledElementsCount = 1000000;
 
 		public List<SearchItem> HandledStates { get; }
 		public List<CubeCommand> Path { get; }

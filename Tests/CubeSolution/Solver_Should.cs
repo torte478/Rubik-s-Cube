@@ -49,22 +49,21 @@ namespace Tests.CubeSolution
 		}
 
 		[Test]
-		[TestCase(SideIndex.Down,  1, 2, SideIndex.Front, 3, 2, 0)]
-		[TestCase(SideIndex.Down,  2, 3, SideIndex.Right, 3, 2, 1)]
-		[TestCase(SideIndex.Right, 3, 2, SideIndex.Down,  2, 3, 1)]
-		[TestCase(SideIndex.Down,  2, 1, SideIndex.Left,  3, 2, 1)]
-		[TestCase(SideIndex.Top,   3, 2, SideIndex.Front, 1, 2, 1)]
-		[TestCase(SideIndex.Right, 1, 2, SideIndex.Top,   2, 3, 1)]
-		[TestCase(SideIndex.Left,  1, 2, SideIndex.Top,   2, 1, 1)]
-		[TestCase(SideIndex.Back,  1, 2, SideIndex.Top,   1, 2, 3)]
-		[TestCase(SideIndex.Front, 2, 3, SideIndex.Right, 2, 1, 1)]
-		[TestCase(SideIndex.Front, 2, 1, SideIndex.Left,  2, 3, 1)]
-		[TestCase(SideIndex.Back,  2, 1, SideIndex.Right, 2, 3, 2)]
-		[TestCase(SideIndex.Back,  2, 3, SideIndex.Left,  2, 1, 2)]
+		[TestCase(SideIndex.Down,  1, 2, SideIndex.Front, 3, 2)]
+		[TestCase(SideIndex.Down,  2, 3, SideIndex.Right, 3, 2)]
+		[TestCase(SideIndex.Right, 3, 2, SideIndex.Down,  2, 3)]
+		[TestCase(SideIndex.Down,  2, 1, SideIndex.Left,  3, 2)]
+		[TestCase(SideIndex.Top,   3, 2, SideIndex.Front, 1, 2)]
+		[TestCase(SideIndex.Right, 1, 2, SideIndex.Top,   2, 3)]
+		[TestCase(SideIndex.Left,  1, 2, SideIndex.Top,   2, 1)]
+		[TestCase(SideIndex.Back,  1, 2, SideIndex.Top,   1, 2)]
+		[TestCase(SideIndex.Front, 2, 3, SideIndex.Right, 2, 1)]
+		[TestCase(SideIndex.Front, 2, 1, SideIndex.Left,  2, 3)]
+		[TestCase(SideIndex.Back,  2, 1, SideIndex.Right, 2, 3)]
+		[TestCase(SideIndex.Back,  2, 3, SideIndex.Left,  2, 1)]
 		public void MoveUpperMiddle_ToStart(
 			SideIndex firstSideIndex, int firstRow, int firstColumn, 
-			SideIndex secondSideIndex, int secondRow, int secondColumn, 
-			int expectedActionCount)
+			SideIndex secondSideIndex, int secondRow, int secondColumn)
 		{
 			cube = cube
 				.SetColor(firstSideIndex, firstRow, firstColumn, CellColor.White)
@@ -72,7 +71,8 @@ namespace Tests.CubeSolution
 
 			var solution = solver.MoveUpperMiddleToStart(cube);
 
-			Assert.That(solution.Actions.Count, Is.EqualTo(expectedActionCount));
+            cube = solution.Actions.Aggregate(cube, (current, solutionAction) => solutionAction.Execute(current));
+            Assert.That(AlgorithmBase.IsUpperMiddleOnStart(cube), Is.True);
 		}
 
 		[Test]
@@ -161,17 +161,16 @@ namespace Tests.CubeSolution
 		}
 
 		[Test]
-		[TestCase(SideIndex.Down, 3, 3, SideIndex.Right, 3, 3, SideIndex.Back, 3, 1, 1)]
-		[TestCase(SideIndex.Down, 1, 1, SideIndex.Left, 3, 3, SideIndex.Front, 3, 1, 1)]
-		[TestCase(SideIndex.Right, 1, 1, SideIndex.Front, 1, 3, SideIndex.Top, 3, 3, 1)]
-		[TestCase(SideIndex.Top, 1, 3, SideIndex.Back, 1, 1, SideIndex.Right, 1, 3, 1)]
-		[TestCase(SideIndex.Top, 1, 1, SideIndex.Left, 1, 1, SideIndex.Back, 1, 3, 2)]
-		[TestCase(SideIndex.Front, 1, 1, SideIndex.Left, 1, 3, SideIndex.Top, 3, 1, 1)]
+		[TestCase(SideIndex.Down, 3, 3, SideIndex.Right, 3, 3, SideIndex.Back, 3, 1)]
+		[TestCase(SideIndex.Down, 1, 1, SideIndex.Left, 3, 3, SideIndex.Front, 3, 1)]
+		[TestCase(SideIndex.Right, 1, 1, SideIndex.Front, 1, 3, SideIndex.Top, 3, 3)]
+		[TestCase(SideIndex.Top, 1, 3, SideIndex.Back, 1, 1, SideIndex.Right, 1, 3)]
+		[TestCase(SideIndex.Top, 1, 1, SideIndex.Left, 1, 1, SideIndex.Back, 1, 3)]
+		[TestCase(SideIndex.Front, 1, 1, SideIndex.Left, 1, 3, SideIndex.Top, 3, 1)]
 		public void MoveUpperCorner_ToStart(
 			SideIndex firstSideIndex, int firstRow, int firstColumn,
 			SideIndex secondSideIndex, int secondRow, int secondColumn,
-			SideIndex thirdSideIndex, int thirdRow, int thirdColumn,
-			int expectedActionCount)
+			SideIndex thirdSideIndex, int thirdRow, int thirdColumn)
 		{
 			cube = cube
 				.SetColor(firstSideIndex, firstRow, firstColumn, CellColor.Green)
@@ -180,7 +179,8 @@ namespace Tests.CubeSolution
 
 			var solution = solver.MoveUpperCornerToStart(cube);
 
-			Assert.That(solution.Actions.Count, Is.EqualTo(expectedActionCount));
+            cube = solution.Actions.Aggregate(cube, (current, solutionAction) => solutionAction.Execute(current));
+            Assert.That(AlgorithmBase.IsUpperCornerOnStart(cube), Is.True);
 		}
 
 		[Test]

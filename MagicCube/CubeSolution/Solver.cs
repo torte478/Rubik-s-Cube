@@ -4,6 +4,8 @@ using System.Linq;
 using MagicCube.Movement;
 using MagicCube.PathSearch;
 
+using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
+
 namespace MagicCube.CubeSolution
 {
 	public class Solver
@@ -53,28 +55,51 @@ namespace MagicCube.CubeSolution
 			};
 		}
 
-		#region UpperLayerSolution
+        private SolutionItem SolveFourSides(RubikCube cube, Func<RubikCube, SolutionItem> solveFunc)
+        {
+            var solveFrontItem = solveFunc(cube);
+            var solveRightItem = solveFunc(solveFrontItem.GoalState.MakeTurn(TurnTo.Left));
+            var solveBackItem = solveFunc(solveRightItem.GoalState.MakeTurn(TurnTo.Left));
+            var solveLeftItem = solveFunc(solveBackItem.GoalState.MakeTurn(TurnTo.Left));
 
-		#region UpperCrossSolution
+            return new SolutionItem
+            {
+                Actions = solveFrontItem.Actions
+                    .Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
+                    .Concat(solveRightItem.Actions)
+                    .Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
+                    .Concat(solveBackItem.Actions)
+                    .Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
+                    .Concat(solveLeftItem.Actions)
+                    .ToList(),
+                GoalState = solveLeftItem.GoalState
+            };
+        }
 
-		public SolutionItem MoveUpperMiddleToStart(RubikCube cube)
+        #region UpperLayerSolution
+
+        #region UpperCrossSolution
+
+        public SolutionItem MoveUpperMiddleToStart(RubikCube cube)
 		{
-			return FindSolution(
-				cube,
-				new[]
-				{
-					CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
-					CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
-					CommandFactory.GetClockwiseRotation(TurnTo.Right),
-					CommandFactory.GetClockwiseRotation(TurnTo.Left),
-					AlgorithmBase.MoveMiddleUpperFrontToLower,
-					AlgorithmBase.MoveMiddleUpperRightToLower,
-					AlgorithmBase.MoveMiddleUpperLeftToLower,
-					AlgorithmBase.MoveMiddleUpperBackToLower,
-					AlgorithmBase.MoveMiddleSecondRightToLower,
-					AlgorithmBase.MoveMiddleSecondLeftToLower
-				},
-				AlgorithmBase.IsUpperMiddleOnStart);
+            var frontColor = cube[SideIndex.Front].GetCenterColor();
+
+            return FindSolution(
+                cube,
+                new[]
+                {
+                    CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
+                    CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
+                    CommandFactory.GetTurn(TurnTo.Right),
+                    CommandFactory.GetTurn(TurnTo.Left),
+                    AlgorithmBase.MoveMiddleUpperTopToLower,
+                    AlgorithmBase.MoveMiddleUpperRightToLower,
+                },
+                c => 
+                {
+                    return c[SideIndex.Front].GetCenterColor() == frontColor
+                    && AlgorithmBase.IsUpperMiddleOnStart(c);
+                });
 		}
 
 		public SolutionItem MoveUpperMiddleFromStartToPoint(RubikCube cube)
@@ -104,23 +129,7 @@ namespace MagicCube.CubeSolution
 
 		public SolutionItem SolveUpperCross(RubikCube cube)
 		{
-			var solveFrontItem = SolveUpperMiddle(cube);
-			var solveRightItem = SolveUpperMiddle(solveFrontItem.GoalState.MakeTurn(TurnTo.Left));
-			var solveBackItem = SolveUpperMiddle(solveRightItem.GoalState.MakeTurn(TurnTo.Left));
-			var solveLeftItem = SolveUpperMiddle(solveBackItem.GoalState.MakeTurn(TurnTo.Left));
-
-			return new SolutionItem
-			{
-				Actions = solveFrontItem.Actions
-					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
-					.Concat(solveRightItem.Actions)
-					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
-					.Concat(solveBackItem.Actions)
-					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
-					.Concat(solveLeftItem.Actions)
-					.ToList(),
-				GoalState = solveLeftItem.GoalState
-			};
+            return SolveFourSides(cube, SolveUpperMiddle);
 		}
 
 		#endregion
@@ -129,18 +138,23 @@ namespace MagicCube.CubeSolution
 
 		public SolutionItem MoveUpperCornerToStart(RubikCube cube)
 		{
+            var frontColor = cube[SideIndex.Front].GetCenterColor();
+
 			return FindSolution(
 				cube,
 				new[]
 				{
 					CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
 					CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
-					AlgorithmBase.MoveCornerUpperFrontToLower,
-					AlgorithmBase.MoveCornerUpperRightToLower,
-					AlgorithmBase.MoveCornerUpperBackToLower,
-					AlgorithmBase.MoveCornerUpperLeftToLower
-				},
-				AlgorithmBase.IsUpperCornerOnStart);
+                    CommandFactory.GetTurn(TurnTo.Left),
+                    CommandFactory.GetTurn(TurnTo.Right),
+                    AlgorithmBase.MoveUpperCornerFrontToLower
+                },
+				c =>
+                {
+                    return c[SideIndex.Front].GetCenterColor() == frontColor
+                    && AlgorithmBase.IsUpperCornerOnStart(c);
+                });
 		}
 
 		public SolutionItem MoveUpperCornerFromStartToPoint(RubikCube cube)
@@ -171,23 +185,7 @@ namespace MagicCube.CubeSolution
 
 		public SolutionItem SolveUpperCorners(RubikCube cube)
 		{
-			var solveFrontItem = SolveUpperCorner(cube);
-			var solveRightItem = SolveUpperCorner(solveFrontItem.GoalState.MakeTurn(TurnTo.Left));
-			var solveBackItem = SolveUpperCorner(solveRightItem.GoalState.MakeTurn(TurnTo.Left));
-			var solveLeftItem = SolveUpperCorner(solveBackItem.GoalState.MakeTurn(TurnTo.Left));
-
-			return new SolutionItem
-			{
-				Actions = solveFrontItem.Actions
-					.Concat(new[] {CommandFactory.GetTurn(TurnTo.Left)})
-					.Concat(solveRightItem.Actions)
-					.Concat(new[] {CommandFactory.GetTurn(TurnTo.Left)})
-					.Concat(solveBackItem.Actions)
-					.Concat(new[] {CommandFactory.GetTurn(TurnTo.Left)})
-					.Concat(solveLeftItem.Actions)
-					.ToList(),
-				GoalState = solveLeftItem.GoalState
-			};
+            return SolveFourSides(cube, SolveUpperCorner);
 		}
 
 		#endregion

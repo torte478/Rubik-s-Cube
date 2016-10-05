@@ -12,49 +12,18 @@ namespace MagicCube.CubeSolution
 
 		#region MoveUpperMiddleToStart
 
-		public static readonly CubeCommand MoveMiddleUpperFrontToLower = new CubeCommand(new CubeAction[]
+		public static readonly CubeCommand MoveMiddleUpperTopToLower = new CubeCommand(new CubeAction[]
 		{
 			cube => cube.MakeClockwiseRotation(TurnTo.Right),
 			cube => cube.MakeClockwiseRotation(TurnTo.Right)
 		});
 
-		public static readonly CubeCommand MoveMiddleUpperRightToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
-			cube => cube.MakeClockwiseRotation(TurnTo.Right)
-		});
-
-		public static readonly CubeCommand MoveMiddleUpperLeftToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeRotation(TurnTo.Down, Layer.First),
-			cube => cube.MakeClockwiseRotation(TurnTo.Left)
-		});
-
-		public static readonly CubeCommand MoveMiddleUpperBackToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeTurn(TurnTo.Left),
-			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
-			cube => cube.MakeTurn(TurnTo.Right)
-		});
-
-		public static readonly CubeCommand MoveMiddleSecondRightToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeTurn(TurnTo.Left),
-			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Left, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
-			cube => cube.MakeTurn(TurnTo.Right)
-		});
-
-		public static readonly CubeCommand MoveMiddleSecondLeftToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeTurn(TurnTo.Right),
-			cube => cube.MakeRotation(TurnTo.Down, Layer.First),
-			cube => cube.MakeRotation(TurnTo.Right, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Up, Layer.First),
-			cube => cube.MakeTurn(TurnTo.Left)
-		});
+        public static readonly CubeCommand MoveMiddleUpperRightToLower = new CubeCommand(new CubeAction[]
+        {
+            c => c.MakeRotation(TurnTo.Down, Layer.Third),
+            c => c.MakeRotation(TurnTo.Left, Layer.Third),
+            c => c.MakeRotation(TurnTo.Up, Layer.Third)
+        });
 
 		public static bool IsUpperMiddleOnStart(RubikCube cube)
 		{
@@ -108,45 +77,20 @@ namespace MagicCube.CubeSolution
 			return isSolvedTop && isSolvedWalls;
 		}
 
-		#endregion
+        #endregion
 
-		#region UpperCornersSolution
+        #region UpperCornersSolution
 
-		#region MoveUpperCornerToStart
+        #region MoveUpperCornerToStart
 
-		public static readonly CubeCommand MoveCornerUpperFrontToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeClockwiseRotation(TurnTo.Right),
-			cube => cube.MakeRotation(TurnTo.Left, Layer.Third),
-			cube => cube.MakeClockwiseRotation(TurnTo.Left)
-		});
+        public static readonly CubeCommand MoveUpperCornerFrontToLower = new CubeCommand(new CubeAction[]
+        {
+            c => c.MakeRotation(TurnTo.Down, Layer.Third),
+            c => c.MakeRotation(TurnTo.Left, Layer.Third),
+            c => c.MakeRotation(TurnTo.Up, Layer.Third)
+        });
 
-		public static readonly CubeCommand MoveCornerUpperRightToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeTurn(TurnTo.Left),
-			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Left, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
-			cube => cube.MakeTurn(TurnTo.Right)
-		});
-
-		public static readonly CubeCommand MoveCornerUpperBackToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeTurn(TurnTo.Right),
-			cube => cube.MakeRotation(TurnTo.Down, Layer.First),
-			cube => cube.MakeRotation(TurnTo.Right, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Up, Layer.First),
-			cube => cube.MakeTurn(TurnTo.Left)
-		});
-
-		public static readonly CubeCommand MoveCornerUpperLeftToLower = new CubeCommand(new CubeAction[]
-		{
-			cube => cube.MakeRotation(TurnTo.Down, Layer.First),
-			cube => cube.MakeRotation(TurnTo.Right, Layer.Third),
-			cube => cube.MakeRotation(TurnTo.Up, Layer.First),
-		});
-
-		public static bool IsUpperCornerOnStart(RubikCube cube)
+        public static bool IsUpperCornerOnStart(RubikCube cube)
 		{
 			var availableColors = new[]
 			{
