@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.canvasPictureBox = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -61,6 +62,8 @@
             this.metroButton3 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
+            this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.canvasPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -315,6 +318,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.metroLabel3);
             this.groupBox2.Controls.Add(this.metroTrackBar1);
             this.groupBox2.Controls.Add(this.metroLabel2);
             this.groupBox2.Controls.Add(this.pictureBox23);
@@ -335,10 +339,14 @@
             // 
             this.metroTrackBar1.BackColor = System.Drawing.Color.Transparent;
             this.metroTrackBar1.Location = new System.Drawing.Point(18, 253);
+            this.metroTrackBar1.Maximum = 5000;
+            this.metroTrackBar1.Minimum = 10;
             this.metroTrackBar1.Name = "metroTrackBar1";
             this.metroTrackBar1.Size = new System.Drawing.Size(251, 30);
             this.metroTrackBar1.TabIndex = 8;
             this.metroTrackBar1.Text = "metroTrackBar1";
+            this.metroTrackBar1.Value = 500;
+            this.metroTrackBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.metroTrackBar1_Scroll);
             // 
             // metroLabel2
             // 
@@ -352,7 +360,7 @@
             // pictureBox23
             // 
             this.pictureBox23.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox23.Image")));
-            this.pictureBox23.Location = new System.Drawing.Point(130, 149);
+            this.pictureBox23.Location = new System.Drawing.Point(130, 165);
             this.pictureBox23.Name = "pictureBox23";
             this.pictureBox23.Size = new System.Drawing.Size(40, 40);
             this.pictureBox23.TabIndex = 6;
@@ -361,16 +369,17 @@
             // pictureBox22
             // 
             this.pictureBox22.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox22.Image")));
-            this.pictureBox22.Location = new System.Drawing.Point(74, 149);
+            this.pictureBox22.Location = new System.Drawing.Point(74, 165);
             this.pictureBox22.Name = "pictureBox22";
             this.pictureBox22.Size = new System.Drawing.Size(40, 40);
             this.pictureBox22.TabIndex = 5;
             this.pictureBox22.TabStop = false;
+            this.pictureBox22.Click += new System.EventHandler(this.pictureBox22_Click);
             // 
             // pictureBox21
             // 
             this.pictureBox21.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox21.Image")));
-            this.pictureBox21.Location = new System.Drawing.Point(18, 149);
+            this.pictureBox21.Location = new System.Drawing.Point(18, 165);
             this.pictureBox21.Name = "pictureBox21";
             this.pictureBox21.Size = new System.Drawing.Size(40, 40);
             this.pictureBox21.TabIndex = 4;
@@ -379,11 +388,11 @@
             // metroLabel1
             // 
             this.metroLabel1.AutoSize = true;
-            this.metroLabel1.Location = new System.Drawing.Point(18, 116);
+            this.metroLabel1.Location = new System.Drawing.Point(18, 132);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(151, 19);
+            this.metroLabel1.Size = new System.Drawing.Size(164, 19);
             this.metroLabel1.TabIndex = 3;
-            this.metroLabel1.Text = "Требуется вращений: ?";
+            this.metroLabel1.Text = "Совершено вращений: 0";
             // 
             // metroButton3
             // 
@@ -411,6 +420,20 @@
             this.metroButton1.TabIndex = 0;
             this.metroButton1.Text = "Случайный кубик";
             this.metroButton1.Click += new System.EventHandler(this.metroButton1_Click);
+            // 
+            // metroLabel3
+            // 
+            this.metroLabel3.AutoSize = true;
+            this.metroLabel3.Location = new System.Drawing.Point(18, 110);
+            this.metroLabel3.Name = "metroLabel3";
+            this.metroLabel3.Size = new System.Drawing.Size(73, 19);
+            this.metroLabel3.TabIndex = 9;
+            this.metroLabel3.Text = "Шаг 0 из 0";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
@@ -503,6 +526,8 @@
         private MetroFramework.Controls.MetroButton metroButton3;
         private MetroFramework.Controls.MetroButton metroButton2;
         private MetroFramework.Controls.MetroButton metroButton1;
+        private MetroFramework.Controls.MetroLabel metroLabel3;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

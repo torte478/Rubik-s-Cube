@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using MagicCube;
 using MagicCube.Movement;
@@ -9,9 +10,11 @@ namespace UserInterface
 {
     public partial class Form1 : MetroForm
     {
-        private readonly CubePainter cubePainter;
-        private RubikCube startCube;
         private readonly RubikCubeAPI cubeAPI = new RubikCubeAPI();
+        private readonly CubePainter cubePainter;
+
+        private RubikCube startCube;
+        private int currentStateIndex;
 
         public Form1()
         {
@@ -141,9 +144,50 @@ namespace UserInterface
 
         private void metroButton3_Click(object sender, EventArgs e)
         {
-            cubeAPI.SolveCube(startCube);
-            MessageBox.Show(@"Нашлось");
+            metroLabel3.Text = @"Выполняется поиск...";
+            
+            //TODO: make a pause
+
+            if (cubeAPI.SolveCube(startCube) == false)
+            {
+                File.WriteAllText("error log.txt", startCube.ToString());
+                MessageBox.Show(@"Произошла неизвестная ошибка! Попробуйте другую конфигурацию кубика");
+                return;
+            }
+
+            currentStateIndex = 0;
+            UpdateLabels();
+        }
+
+        private void UpdateLabels()
+        {
+            metroLabel3.Text = $@"Шаг {currentStateIndex} из {cubeAPI.Actions.Length}";
             metroLabel1.Text = $@"Требуется вращений: {cubeAPI.RotationCount}";
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            ++currentStateIndex;
+            if (currentStateIndex >= cubeAPI.States.Length)
+            {
+                timer1.Enabled = false;
+                MessageBox.Show(@"Кубик собран!");
+                return;
+            }
+            ChangeCube(cubeAPI.States[currentStateIndex]);
+            UpdateLabels();
+        }
+
+        private void pictureBox22_Click(object sender, EventArgs e)
+        {
+            timer1.Enabled = !timer1.Enabled;
+        }
+
+        private void metroTrackBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            timer1.Enabled = false;
+            timer1.Interval = metroTrackBar1.Value;
+            timer1.Enabled = true;
         }
     }
 }
