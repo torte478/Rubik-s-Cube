@@ -381,9 +381,9 @@
             this.metroLabel1.AutoSize = true;
             this.metroLabel1.Location = new System.Drawing.Point(18, 116);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(152, 19);
+            this.metroLabel1.Size = new System.Drawing.Size(151, 19);
             this.metroLabel1.TabIndex = 3;
-            this.metroLabel1.Text = "Требуется вращений: 0";
+            this.metroLabel1.Text = "Требуется вращений: ?";
             // 
             // metroButton3
             // 
@@ -392,6 +392,7 @@
             this.metroButton3.Size = new System.Drawing.Size(118, 23);
             this.metroButton3.TabIndex = 2;
             this.metroButton3.Text = "Найти решение";
+            this.metroButton3.Click += new System.EventHandler(this.metroButton3_Click);
             // 
             // metroButton2
             // 

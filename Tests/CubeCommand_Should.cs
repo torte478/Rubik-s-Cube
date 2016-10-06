@@ -65,5 +65,26 @@ namespace Tests
             
             Assert.That(command.ToString(), Is.EqualTo("Command 2"));
 	    }
+
+	    [Test]
+	    public void HaveEmptyActions_AfterInitializationByEmptyArray()
+	    {
+	        var command = new CubeCommand(new Func<RubikCube, RubikCube>[] {});
+
+            Assert.That(command.Actions.Length, Is.EqualTo(0));
+	    }
+
+	    [Test]
+	    public void HaveActions_AfterInitialization()
+	    {
+	        var command = new CubeCommand(new Func<RubikCube, RubikCube>[]
+	        {
+	            c => c,
+	            c => c,
+	            c => c,
+	        });
+
+            Assert.That(command.Actions.Length, Is.EqualTo(3));
+	    }
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 using MagicCube;
 using MagicCube.Movement;
 using MetroFramework.Forms;
@@ -8,18 +9,17 @@ namespace UserInterface
 {
     public partial class Form1 : MetroForm
     {
-        private readonly CubeGenerator cubeGenerator;
         private readonly CubePainter cubePainter;
         private RubikCube startCube;
+        private readonly RubikCubeAPI cubeAPI = new RubikCubeAPI();
 
         public Form1()
         {
             InitializeComponent();
             canvasPictureBox.Image = new Bitmap(canvasPictureBox.Width, canvasPictureBox.Height);
             cubePainter = new CubePainter(Graphics.FromImage(canvasPictureBox.Image), canvasPictureBox);
-            cubeGenerator = new CubeGenerator();
 
-            startCube = cubeGenerator.GetSolvedCube();
+            startCube = cubeAPI.GetSolvedCube();
             cubePainter.Draw(startCube);
         }
 
@@ -29,17 +29,17 @@ namespace UserInterface
             cubePainter.Draw(startCube);
         }
 
-        private void metroButton2_Click(object sender, System.EventArgs e)
+        private void metroButton2_Click(object sender, EventArgs e)
         {
-            ChangeCube(cubeGenerator.GetSolvedCube());
+            ChangeCube(cubeAPI.GetSolvedCube());
         }
 
-        private void metroButton1_Click(object sender, System.EventArgs e)
+        private void metroButton1_Click(object sender, EventArgs e)
         {
-            ChangeCube(cubeGenerator.GetRandomCube());
+            ChangeCube(cubeAPI.GetRandomCube());
         }
 
-        private void pictureBox16_Click(object sender, System.EventArgs e)
+        private void pictureBox16_Click(object sender, EventArgs e)
         {
             ChangeCube(startCube.MakeTurn(TurnTo.Up));
         }
@@ -137,6 +137,13 @@ namespace UserInterface
         private void pictureBox20_Click(object sender, EventArgs e)
         {
             ChangeCube(startCube.MakeClockwiseRotation(TurnTo.Left));
+        }
+
+        private void metroButton3_Click(object sender, EventArgs e)
+        {
+            cubeAPI.SolveCube(startCube);
+            MessageBox.Show(@"Нашлось");
+            metroLabel1.Text = $@"Требуется вращений: {cubeAPI.RotationCount}";
         }
     }
 }

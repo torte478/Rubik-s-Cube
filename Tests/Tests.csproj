@@ -77,6 +77,7 @@
     <Compile Include="CommandFactory_Should.cs" />
     <Compile Include="CubeCommand_Should.cs" />
     <Compile Include="CubeGenerator_Should.cs" />
+    <Compile Include="RubikCubeAPI_Should.cs" />
     <Compile Include="Movement\CubeSideMovement_Shoud.cs" />
     <Compile Include="CubeSide_Should.cs" />
     <Compile Include="CubeSolution\SolutionItem_Should.cs" />
