@@ -70,7 +70,7 @@ namespace UserInterface
                 case CellColor.Green:
                     return Color.Green;
                 case CellColor.Orange:
-                    return Color.Orange;
+                    return Color.DarkOrange;
                 case CellColor.White:
                     return Color.White;
                 case CellColor.Yellow:
