@@ -175,11 +175,8 @@ namespace MagicCube.CubeSolution
                     CommandFactory.GetTurn(TurnTo.Right),
                     AlgorithmBase.MoveUpperCornerFrontToLower
                 },
-				c =>
-                {
-                    return c[SideIndex.Front].GetCenterColor() == frontColor
-                    && AlgorithmBase.IsUpperCornerOnStart(c);
-                });
+				c => c[SideIndex.Front].GetCenterColor() == frontColor
+				     && AlgorithmBase.IsUpperCornerOnStart(c));
 		}
 
 		public SolutionItem MoveUpperCornerFromStartToPoint(RubikCube cube)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace MagicCube
 {
@@ -67,6 +68,18 @@ namespace MagicCube
 		public CellColor GetCenterColor()
 		{
 			return GetColor(2, 2);
+		}
+
+		public override string ToString()
+		{
+			var toString = new StringBuilder();
+			for (var row = 1; row <= 3; ++row)
+			{
+				for (var column = 1; column <= 3; ++column)
+					toString.Append(GetColor(row, column) + " ");
+				toString.AppendLine();
+			}
+			return toString.ToString();
 		}
 	}
 }

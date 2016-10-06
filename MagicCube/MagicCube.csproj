@@ -43,6 +43,7 @@
     <Compile Include="CellColor.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="CubeCommand.cs" />
+    <Compile Include="CubeGenerator.cs" />
     <Compile Include="CubeSide.cs" />
     <Compile Include="Movement\RubikCubeMovementDetails.cs" />
     <Compile Include="Movement\CubeSideMovement.cs" />

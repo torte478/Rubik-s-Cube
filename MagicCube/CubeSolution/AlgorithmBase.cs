@@ -52,15 +52,21 @@ namespace MagicCube.CubeSolution
 		public static readonly CubeCommand MoveMiddleUpperTopToLower = new CubeCommand(new CubeAction[]
 		{
 			cube => cube.MakeClockwiseRotation(TurnTo.Right),
-			cube => cube.MakeClockwiseRotation(TurnTo.Right)
-		});
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+            cube => cube.MakeRotation(TurnTo.Left, Layer.Third),
+            cube => cube.MakeClockwiseRotation(TurnTo.Right),
+            cube => cube.MakeClockwiseRotation(TurnTo.Right),
+            cube => cube.MakeRotation(TurnTo.Right, Layer.Third),
+        },
+            "Move top middle to lower layer");
 
 		public static readonly CubeCommand MoveMiddleUpperRightToLower = new CubeCommand(new CubeAction[]
         {
             c => c.MakeRotation(TurnTo.Down, Layer.Third),
             c => c.MakeRotation(TurnTo.Left, Layer.Third),
-            c => c.MakeRotation(TurnTo.Up, Layer.Third)
-        });
+            c => c.MakeRotation(TurnTo.Up, Layer.Third),
+        },
+            "Move middle middle to lower layer");
 
 		#endregion
 
@@ -72,7 +78,8 @@ namespace MagicCube.CubeSolution
 			cube => cube.MakeRotation(TurnTo.Right, Layer.Third),
 			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
 			cube => cube.MakeClockwiseRotation(TurnTo.Left)
-		});
+		},
+            "Move lower middle to upert layer");
 
 		public static bool IsUpperMiddleOnStartCorrectOriented(RubikCube cube)
 		{
@@ -111,8 +118,10 @@ namespace MagicCube.CubeSolution
         {
             c => c.MakeRotation(TurnTo.Down, Layer.Third),
             c => c.MakeRotation(TurnTo.Left, Layer.Third),
-            c => c.MakeRotation(TurnTo.Up, Layer.Third)
-        });
+            c => c.MakeRotation(TurnTo.Up, Layer.Third),
+            c => c.MakeRotation(TurnTo.Right, Layer.Third)
+        },
+            "Move upper corner to lower");
 
 		#endregion
 
