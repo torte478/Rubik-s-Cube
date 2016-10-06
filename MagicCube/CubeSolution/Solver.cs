@@ -348,8 +348,7 @@ namespace MagicCube.CubeSolution
 		{
 			var solveUpperLayer = SolveUpperLayer(cube);
 			var solveMiddleLayer = SolveMiddleLayer(solveUpperLayer.GoalState);
-			var solveLowerLayer = SolveLowerLayer(solveMiddleLayer.GoalState
-				.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up));
+			var solveLowerLayer = SolveLowerLayer(solveMiddleLayer.GoalState.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up));
 
 			return new SolutionItem
 			{
