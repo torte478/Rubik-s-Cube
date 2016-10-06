@@ -26,18 +26,16 @@ namespace MagicCube.CubeSolution
 			bool isNotNeedMovement, 
 			Func<RubikCube, SolutionItem> moveToPoint)
 		{
-			if (isNotNeedMovement)
+			return isNotNeedMovement ? GetEmptySolution(cube) : moveToPoint(cube);
+		}
+
+		private static SolutionItem GetEmptySolution(RubikCube cube)
+		{
+			return new SolutionItem
 			{
-				return new SolutionItem
-				{
-					Actions = new List<CubeCommand>(),
-					GoalState = cube
-				};
-			}
-			else
-			{
-				return moveToPoint(cube);
-			}
+				Actions = new List<CubeCommand>(),
+				GoalState = cube
+			};
 		}
 
 		private static SolutionItem FindAndMove(
@@ -55,7 +53,7 @@ namespace MagicCube.CubeSolution
 			};
 		}
 
-        private SolutionItem SolveFourSides(RubikCube cube, Func<RubikCube, SolutionItem> solveFunc)
+        private static SolutionItem SolveFourSides(RubikCube cube, Func<RubikCube, SolutionItem> solveFunc)
         {
             var solveFrontItem = solveFunc(cube);
             var solveRightItem = solveFunc(solveFrontItem.GoalState.MakeTurn(TurnTo.Left));
@@ -76,42 +74,25 @@ namespace MagicCube.CubeSolution
             };
         }
 
-        #region UpperLayerSolution
+		#region UpperLayerSolution
 
-        #region UpperCrossSolution
-
-        public SolutionItem MoveUpperMiddleToStart(RubikCube cube)
+		public SolutionItem SolveUpperLayer(RubikCube cube)
 		{
-            var frontColor = cube[SideIndex.Front].GetCenterColor();
+			var solveCross = SolveUpperCross(cube);
+			var solveCorners = SolveUpperCorners(solveCross.GoalState);
 
-            return FindSolution(
-                cube,
-                new[]
-                {
-                    CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
-                    CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
-                    CommandFactory.GetTurn(TurnTo.Right),
-                    CommandFactory.GetTurn(TurnTo.Left),
-                    AlgorithmBase.MoveMiddleUpperTopToLower,
-                    AlgorithmBase.MoveMiddleUpperRightToLower,
-                },
-                c => 
-                {
-                    return c[SideIndex.Front].GetCenterColor() == frontColor
-                    && AlgorithmBase.IsUpperMiddleOnStart(c);
-                });
+			return new SolutionItem
+			{
+				Actions = solveCross.Actions.Concat(solveCorners.Actions).ToList(),
+				GoalState = solveCorners.GoalState
+			};
 		}
 
-		public SolutionItem MoveUpperMiddleFromStartToPoint(RubikCube cube)
+		#region UpperCrossSolution
+
+		public SolutionItem SolveUpperCross(RubikCube cube)
 		{
-			return FindSolution(
-				cube,
-				new[]
-				{
-					CommandFactory.GetClockwiseRotation(TurnTo.Right),
-					AlgorithmBase.MoveIncorrectOrientedUpperMiddleToPoint
-				},
-				AlgorithmBase.IsUpperMiddleOnPoint);
+			return SolveFourSides(cube, SolveUpperMiddle);
 		}
 
 		public SolutionItem SolveUpperMiddle(RubikCube cube)
@@ -127,14 +108,58 @@ namespace MagicCube.CubeSolution
 			return FindAndMove(cube, MoveUpperMiddleToStart, MoveUpperMiddleFromStartToPoint);
 		}
 
-		public SolutionItem SolveUpperCross(RubikCube cube)
+		public SolutionItem MoveUpperMiddleToStart(RubikCube cube)
 		{
-            return SolveFourSides(cube, SolveUpperMiddle);
+			var frontColor = cube[SideIndex.Front].GetCenterColor();
+
+			return FindSolution(
+				cube,
+				new[]
+				{
+					CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
+					CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
+					CommandFactory.GetTurn(TurnTo.Right),
+					CommandFactory.GetTurn(TurnTo.Left),
+					AlgorithmBase.MoveMiddleUpperTopToLower,
+					AlgorithmBase.MoveMiddleUpperRightToLower,
+				},
+				c => c[SideIndex.Front].GetCenterColor() == frontColor
+				     && AlgorithmBase.IsUpperMiddleOnStart(c));
+		}
+
+		public SolutionItem MoveUpperMiddleFromStartToPoint(RubikCube cube)
+		{
+			return FindSolution(
+				cube,
+				new[]
+				{
+					CommandFactory.GetClockwiseRotation(TurnTo.Right),
+					AlgorithmBase.MoveIncorrectOrientedUpperMiddleToPoint
+				},
+				AlgorithmBase.IsUpperMiddleOnPoint);
 		}
 
 		#endregion
 
 		#region UpperCornersSolution
+
+		public SolutionItem SolveUpperCorners(RubikCube cube)
+		{
+			return SolveFourSides(cube, SolveUpperCorner);
+		}
+
+		public SolutionItem SolveUpperCorner(RubikCube cube)
+		{
+			return FindAndMoveToPointIfNeed(
+				cube,
+				AlgorithmBase.IsUpperCornerOnPoint(cube),
+				FindAndMoveUpperCornerToPoint);
+		}
+
+		private SolutionItem FindAndMoveUpperCornerToPoint(RubikCube cube)
+		{
+			return FindAndMove(cube, MoveUpperCornerToStart, MoveUpperCornerFromStartToPoint);
+		}
 
 		public SolutionItem MoveUpperCornerToStart(RubikCube cube)
 		{
@@ -170,71 +195,60 @@ namespace MagicCube.CubeSolution
 				AlgorithmBase.IsUpperCornerOnPoint);
 		}
 
-		public SolutionItem SolveUpperCorner(RubikCube cube)
+		#endregion
+
+		#endregion
+
+		#region MiddleLayerSolution
+
+		public SolutionItem SolveMiddleLayer(RubikCube cube)
+		{
+			return SolveFourSides(cube, SolveMiddleMiddle);
+		}
+
+		private SolutionItem SolveMiddleMiddle(RubikCube cube)
 		{
 			return FindAndMoveToPointIfNeed(
+				cube, 
+				AlgorithmBase.IsMiddleMiddleOnPoint(cube), 
+				FindAndMoveMiddleMiddleToPoint);
+		}
+
+		private SolutionItem FindAndMoveMiddleMiddleToPoint(RubikCube cube)
+		{
+			return FindAndMove(cube, MoveMiddleMiddleToStart, MoveMiddleMiddleFromStartToPoint);
+		}
+
+		public SolutionItem MoveMiddleMiddleToStart(RubikCube cube)
+		{
+			var frontColor = cube[SideIndex.Front].GetCenterColor();
+
+			return FindSolution(
 				cube,
-				AlgorithmBase.IsUpperCornerOnPoint(cube),
-				FindAndMoveUpperCornerToPoint);
+				new[]
+				{
+					CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
+					CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
+					CommandFactory.GetTurn(TurnTo.Right),
+					CommandFactory.GetTurn(TurnTo.Left),
+					AlgorithmBase.MoveCorrectOrientedMiddleMiddleToPoint
+				},
+				c => c[SideIndex.Front].GetCenterColor() == frontColor
+					 && AlgorithmBase.IsMiddleMiddleOnStart(c));
 		}
 
-		private SolutionItem FindAndMoveUpperCornerToPoint(RubikCube cube)
+		public SolutionItem MoveMiddleMiddleFromStartToPoint(RubikCube cube)
 		{
-			return FindAndMove(cube, MoveUpperCornerToStart, MoveUpperCornerFromStartToPoint);
+			return FindSolution(
+				cube,
+				new[]
+				{
+					AlgorithmBase.MoveCorrectOrientedMiddleMiddleToPoint,
+					AlgorithmBase.MoveIncorrectOrientedMiddleMiddleToPoint,
+				},
+				AlgorithmBase.IsMiddleMiddleOnPoint);
 		}
 
-		public SolutionItem SolveUpperCorners(RubikCube cube)
-		{
-            return SolveFourSides(cube, SolveUpperCorner);
-		}
-
-        #endregion
-
-        #endregion
-
-        public SolutionItem SolveUpperLayer(RubikCube cube)
-        {
-            var solveCross = SolveUpperCross(cube);
-            var solveCorners = SolveUpperCorners(solveCross.GoalState);
-
-            return new SolutionItem
-            {
-                Actions = solveCross.Actions.Concat(solveCorners.Actions).ToList(),
-                GoalState = solveCorners.GoalState
-            };
-        }
-
-        public SolutionItem MoveMiddleMiddleToStart(RubikCube cube)
-        {
-            var frontColor = cube[SideIndex.Front].GetCenterColor();
-
-            return FindSolution(
-                cube,
-                new CubeCommand[]
-                {
-                    CommandFactory.GetRotation(TurnTo.Left, Layer.Third),
-                    CommandFactory.GetRotation(TurnTo.Right, Layer.Third),
-                    CommandFactory.GetTurn(TurnTo.Right),
-                    CommandFactory.GetTurn(TurnTo.Left),
-                    AlgorithmBase.MoveCorrectOrientedMiddleMiddleToPoint
-                },
-                c =>
-                {
-                    return c[SideIndex.Front].GetCenterColor() == frontColor
-                    && AlgorithmBase.IsMiddleMiddleOnStart(c);
-                });
-        }
-
-        public SolutionItem MoveMiddleMiddleFromStartToPoint(RubikCube cube)
-        {
-            return FindSolution(
-                cube,
-                new[]
-                {
-                    AlgorithmBase.MoveCorrectOrientedMiddleMiddleToPoint,
-                    AlgorithmBase.MoveIncorrectOrientedMiddleMiddleToPoint,
-                },
-                AlgorithmBase.IsMiddleMiddleOnPoint);
-        }
-    }
+		#endregion
+	}
 }

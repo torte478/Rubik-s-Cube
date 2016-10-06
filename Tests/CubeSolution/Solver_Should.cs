@@ -112,19 +112,6 @@ namespace Tests.CubeSolution
 		}
 
 		[Test]
-		public void SolveUpperMiddle_WhenUpperMiddleOnWrongPoint()
-		{
-			cube = cube
-				.SetColor(SideIndex.Front, 2, 3, CellColor.White)
-				.SetColor(SideIndex.Right, 2, 1, CellColor.Green);
-
-			var solution = solver.SolveUpperMiddle(cube);
-
-			Assert.That(solution.GoalState[SideIndex.Front].GetColor(1, 2), Is.EqualTo(CellColor.Green));
-			Assert.That(solution.GoalState[SideIndex.Top].GetColor(3, 2), Is.EqualTo(CellColor.White));
-		}
-
-		[Test]
 		public void SolveUpperCross()
 		{
 			var solution = solver.SolveUpperCross(TestHelper.GetNotSolvedCube());
@@ -217,14 +204,6 @@ namespace Tests.CubeSolution
 		}
 
 		[Test]
-		public void SolveUpperCorner()
-		{
-			var solution = solver.SolveUpperCorner(TestHelper.GetNotSolvedCube());
-
-			Assert.That(AlgorithmBase.IsUpperCornerOnPoint(solution.GoalState), Is.True);
-		}
-
-		[Test]
 		public void SolveUpperCorners()
 		{
 			var solution = solver.SolveUpperCorners(TestHelper.GetNotSolvedCube());
@@ -264,9 +243,11 @@ namespace Tests.CubeSolution
 			Assert.That(AlgorithmBase.IsSolvedUpperLayer(testCube), Is.True);
 		}
 
-        #endregion
+		#endregion
 
-        [Test]
+		#region MiddleLayerSolutionTests
+
+		[Test]
         public void ReturnStartState_WhenMiddleMiddleOnStart()
         {
             cube = cube
@@ -319,5 +300,28 @@ namespace Tests.CubeSolution
 
             Assert.That(solution.Actions.Count, Is.EqualTo(1));
         }
-    }
+
+		[Test]
+		public void SolveMiddleLayer()
+		{
+			var cubeWithSolvedUpperLayer = solver.SolveUpperLayer(TestHelper.GetNotSolvedCube()).GoalState;
+
+			var solution = solver.SolveMiddleLayer(cubeWithSolvedUpperLayer);
+
+			Assert.That(AlgorithmBase.IsSolvedMiddleMiddle(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void ReturnCorrectActions_ForMiddleLayerSolution()
+		{
+			var startCube = solver.SolveUpperLayer(TestHelper.GetNotSolvedCube()).GoalState;
+
+			var solution = solver.SolveMiddleLayer(startCube);
+
+			var testCube = solution.Actions.Aggregate(startCube, (current, solutionAction) => solutionAction.Execute(current));
+			Assert.That(AlgorithmBase.IsSolvedMiddleMiddle(testCube), Is.True);
+		}
+
+		#endregion
+	}
 }

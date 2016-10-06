@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MagicCube.Movement;
 using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
 
@@ -172,9 +171,11 @@ namespace MagicCube.CubeSolution
 			return IsSolvedUpperCross(cube) && IsSolvedUpperCorners(cube);
 		}
 
-        #endregion
+		#endregion
 
-        public static bool IsMiddleMiddleOnStart(RubikCube cube)
+		#region MiddleLayerSolution
+
+		public static bool IsMiddleMiddleOnStart(RubikCube cube)
         {
             var availableColors = new[]
             {
@@ -216,5 +217,15 @@ namespace MagicCube.CubeSolution
             return cube[SideIndex.Front].GetColor(2, 3) == cube[SideIndex.Front].GetCenterColor()
                    && cube[SideIndex.Right].GetColor(2, 1) == cube[SideIndex.Right].GetCenterColor();
         }
-    }
+
+		public static bool IsSolvedMiddleMiddle(RubikCube cube)
+		{
+			return IsMiddleMiddleOnPoint(cube)
+			       && IsMiddleMiddleOnPoint(cube.MakeTurn(TurnTo.Left))
+			       && IsMiddleMiddleOnPoint(cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Left))
+			       && IsMiddleMiddleOnPoint(cube.MakeTurn(TurnTo.Right));
+		}
+
+		#endregion
+	}
 }
