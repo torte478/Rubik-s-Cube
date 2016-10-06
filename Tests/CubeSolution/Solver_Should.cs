@@ -334,6 +334,8 @@ namespace Tests.CubeSolution
 
 		#endregion
 
+		#region LowerLayerSolutionTests
+
 		#region LowerCrossSolutionTests
 
 		[Test]
@@ -427,5 +429,45 @@ namespace Tests.CubeSolution
 		}
 
 		#endregion
+
+		[Test]
+		public void SolveLowerLayer()
+		{
+			var solution = solver.SolveLowerLayer(GetCubeWithTwoSolvedLayers());
+
+			Assert.That(AlgorithmBase.IsSolvedLowerLayer(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void ReturnCorrectActions_ForLowerLayerSolution()
+		{
+			var testCube = GetCubeWithTwoSolvedLayers();
+
+			var solution = solver.SolveLowerLayer(testCube);
+
+			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
+			Assert.That(AlgorithmBase.IsSolvedLowerLayer(testCube), Is.True);
+		}
+
+		#endregion
+
+		[Test]
+		public void SolveCube()
+		{
+			var solution = solver.SolveCube(TestHelper.GetNotSolvedCube());
+
+			Assert.That(AlgorithmBase.IsSolvedCube(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void ReturnCorrectAction_ForCubeSolution()
+		{
+			var testCube = TestHelper.GetNotSolvedCube();
+
+			var solution = solver.SolveCube(testCube);
+
+			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
+			Assert.That(AlgorithmBase.IsSolvedCube(testCube), Is.True);
+		}
 	}
 }

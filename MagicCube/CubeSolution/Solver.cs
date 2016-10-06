@@ -251,6 +251,24 @@ namespace MagicCube.CubeSolution
 
 		#endregion
 
+		#region LowerLayerSolution
+
+		public SolutionItem SolveLowerLayer(RubikCube cube)
+		{
+			var solveCrossItem = SolveLowerCross(cube);
+			var moveToStartItem = MoveLowerCornersToStart(solveCrossItem.GoalState);
+			var moveToPointItem = MoveLowerCornersToPoint(moveToStartItem.GoalState);
+
+			return new SolutionItem
+			{
+				Actions = solveCrossItem.Actions
+					.Concat(moveToStartItem.Actions)
+					.Concat(moveToPointItem.Actions)
+					.ToList(),
+				GoalState = moveToPointItem.GoalState
+			};
+		}
+
 		#region LowerCrossSolution
 
 		public SolutionItem SolveLowerCross(RubikCube cube)
@@ -326,5 +344,29 @@ namespace MagicCube.CubeSolution
 		}
 
 		#endregion
+
+		#endregion
+
+		public SolutionItem SolveCube(RubikCube cube)
+		{
+			var solveUpperLayer = SolveUpperLayer(cube);
+			var solveMiddleLayer = SolveMiddleLayer(solveUpperLayer.GoalState);
+			var solveLowerLayer = SolveLowerLayer(solveMiddleLayer.GoalState
+				.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up));
+
+			return new SolutionItem
+			{
+				Actions = solveUpperLayer.Actions
+					.Concat(solveMiddleLayer.Actions)
+					.Concat(new []
+					{
+						CommandFactory.GetTurn(TurnTo.Up),
+						CommandFactory.GetTurn(TurnTo.Up)
+					})
+					.Concat(solveLowerLayer.Actions)
+					.ToList(),
+				GoalState = solveLowerLayer.GoalState
+			};
+		}
 	}
 }

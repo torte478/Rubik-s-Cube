@@ -228,6 +228,8 @@ namespace MagicCube.CubeSolution
 
 		#endregion
 
+		#region LowerLayerSolution
+
 		#region LowerCrossSolution
 
 		public static bool IsLowerCrossOnStart(RubikCube cube)
@@ -338,8 +340,7 @@ namespace MagicCube.CubeSolution
 			return IsLowerCornerOnPoint(cube)
 			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Left))
 			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Left))
-			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Right))
-				   ;
+			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Right));
 		}
 
 		public static CubeCommand RotateLowerCornerByRight = new CubeCommand(new CubeAction[]
@@ -367,5 +368,34 @@ namespace MagicCube.CubeSolution
 		});
 
 		#endregion
+
+		public static bool IsSolvedLowerLayer(RubikCube cube)
+		{
+			return IsSolvedLowerLayerOnFront(cube)
+				&& IsSolvedLowerLayerOnFront(cube.MakeTurn(TurnTo.Left))
+				&& IsSolvedLowerLayerOnFront(cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Left))
+				&& IsSolvedLowerLayerOnFront(cube.MakeTurn(TurnTo.Right));
+		}
+
+		private static bool IsSolvedLowerLayerOnFront(RubikCube cube)
+		{
+			var centerColor = cube[SideIndex.Front].GetCenterColor();
+
+			return cube[SideIndex.Front].GetColor(1, 1) == centerColor
+			       && cube[SideIndex.Front].GetColor(1, 2) == centerColor
+			       && cube[SideIndex.Front].GetColor(1, 3) == centerColor;
+		}
+
+		#endregion
+
+		public static bool IsSolvedCube(RubikCube cube)
+		{
+			return cube[SideIndex.Front].IsFill(cube[SideIndex.Front].GetCenterColor())
+			       && cube[SideIndex.Top].IsFill(cube[SideIndex.Top].GetCenterColor())
+			       && cube[SideIndex.Right].IsFill(cube[SideIndex.Right].GetCenterColor())
+			       && cube[SideIndex.Back].IsFill(cube[SideIndex.Back].GetCenterColor())
+			       && cube[SideIndex.Down].IsFill(cube[SideIndex.Down].GetCenterColor())
+			       && cube[SideIndex.Left].IsFill(cube[SideIndex.Left].GetCenterColor());
+		}
 	}
 }
