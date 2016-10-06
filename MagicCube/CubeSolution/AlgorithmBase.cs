@@ -227,5 +227,55 @@ namespace MagicCube.CubeSolution
 		}
 
 		#endregion
+
+		#region LowerCrossSolution
+
+		public static bool IsLowerCrossOnStart(RubikCube cube)
+		{
+			return IsLowerMiddleOnStart(cube)
+				&& IsLowerMiddleOnStart(cube.MakeTurn(TurnTo.Left))
+				&& IsLowerMiddleOnStart(cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Left))
+				&& IsLowerMiddleOnStart(cube.MakeTurn(TurnTo.Right));
+		}
+
+		private static bool IsLowerMiddleOnStart(RubikCube cube)
+		{
+			return cube[SideIndex.Front].GetColor(1, 2) == cube[SideIndex.Front].GetCenterColor()
+			       || cube[SideIndex.Top].GetColor(3, 2) == cube[SideIndex.Front].GetCenterColor();
+		}
+
+		public static CubeCommand ReplaceLowerLayerMiddles = new CubeCommand(new CubeAction[]
+		{
+			cube => cube.MakeRotation(TurnTo.Left, Layer.First),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeRotation(TurnTo.Left, Layer.First),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+			cube => cube.MakeRotation(TurnTo.Right, Layer.First),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left)
+		});
+
+		public static bool IsSolvedLowerCross(RubikCube cube)
+		{
+			var centerColor = cube[SideIndex.Top].GetCenterColor();
+			return cube[SideIndex.Top].GetColor(1, 2) == centerColor
+			       && cube[SideIndex.Top].GetColor(2, 1) == centerColor
+			       && cube[SideIndex.Top].GetColor(2, 3) == centerColor
+			       && cube[SideIndex.Top].GetColor(3, 2) == centerColor;
+		}
+
+		public static CubeCommand ReorientateLowerMiddle = new CubeCommand(new CubeAction[]
+		{
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeRotation(TurnTo.Right, Layer.Second),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeRotation(TurnTo.Right, Layer.Second),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeRotation(TurnTo.Right, Layer.Second),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeRotation(TurnTo.Right, Layer.Second)
+		});
+
+		#endregion
 	}
 }

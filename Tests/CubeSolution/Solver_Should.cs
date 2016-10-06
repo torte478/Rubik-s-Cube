@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MagicCube;
 using MagicCube.CubeSolution;
+using MagicCube.Movement;
 using NUnit.Framework;
 
 namespace Tests.CubeSolution
@@ -15,6 +16,12 @@ namespace Tests.CubeSolution
 		public void SetUp()
 		{
 			solver = new Solver();
+			FillCubeByOneColor();
+			SetCenterColors();
+		}
+
+		private void FillCubeByOneColor()
+		{
 			cube = new RubikCube(
 				new CubeSide(CellColor.Yellow),
 				new CubeSide(CellColor.Yellow),
@@ -23,7 +30,10 @@ namespace Tests.CubeSolution
 				new CubeSide(CellColor.Yellow),
 				new CubeSide(CellColor.Yellow)
 				);
+		}
 
+		private void SetCenterColors()
+		{
 			cube[SideIndex.Front].SetColor(CellColor.Green, 2, 2);
 			cube[SideIndex.Top].SetColor(CellColor.White, 2, 2);
 			cube[SideIndex.Right].SetColor(CellColor.Orange, 2, 2);
@@ -320,6 +330,48 @@ namespace Tests.CubeSolution
 
 			var testCube = solution.Actions.Aggregate(startCube, (current, solutionAction) => solutionAction.Execute(current));
 			Assert.That(AlgorithmBase.IsSolvedMiddleMiddle(testCube), Is.True);
+		}
+
+		#endregion
+
+		#region LowerCrossSolutionTests
+
+		[Test]
+		public void ReturnStartState_WhenLowerCrossOnStart()
+		{
+			cube = cube.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up)
+				.SetColor(SideIndex.Front, 1, 2, CellColor.Yellow).SetColor(SideIndex.Top, 3, 2, CellColor.Blue)
+				.SetColor(SideIndex.Right, 1, 2, CellColor.Orange).SetColor(SideIndex.Top, 2, 3, CellColor.Blue)
+				.SetColor(SideIndex.Back, 1, 2, CellColor.Green).SetColor(SideIndex.Top, 1, 2, CellColor.Blue)
+				.SetColor(SideIndex.Left, 1, 2, CellColor.Red).SetColor(SideIndex.Top, 2, 1, CellColor.Blue);
+
+			var solution = solver.MoveLowerCrossToStart(cube);
+
+			Assert.That(solution.Actions.Count, Is.EqualTo(0));
+		}
+
+		[Test]
+		public void MoveLowerCross_ToStart()
+		{
+			var solution = solver.MoveLowerCrossToStart(GetCubeWithTwoSolvedLayers());
+
+			Assert.That(AlgorithmBase.IsLowerCrossOnStart(solution.GoalState), Is.True);
+		}
+
+		private RubikCube GetCubeWithTwoSolvedLayers()
+		{
+			var cubeWithSolvedUpperLayer = solver.SolveUpperLayer(TestHelper.GetNotSolvedCube()).GoalState;
+			var cubeWithSolvedMiddleLayer = solver.SolveMiddleLayer(cubeWithSolvedUpperLayer).GoalState;
+
+			return cubeWithSolvedMiddleLayer.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up);
+		}
+
+		[Test]
+		public void SolveLowerCross()
+		{
+			var solution = solver.SolveLowerCross(GetCubeWithTwoSolvedLayers());
+
+			Assert.That(AlgorithmBase.IsSolvedLowerCross(solution.GoalState), Is.True);
 		}
 
 		#endregion

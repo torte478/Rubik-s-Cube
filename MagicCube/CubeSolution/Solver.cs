@@ -10,23 +10,35 @@ namespace MagicCube.CubeSolution
 {
 	public class Solver
 	{
-		private static SolutionItem FindSolution(RubikCube cube, CubeCommand[] commands, Func<RubikCube, bool> condition)
+		private static SolutionItem SolveFourSides(RubikCube cube, Func<RubikCube, SolutionItem> solveFunc)
 		{
-			var searcher = new PathSearhcer(cube, commands, condition);
+			var solveFrontItem = solveFunc(cube);
+			var solveRightItem = solveFunc(solveFrontItem.GoalState.MakeTurn(TurnTo.Left));
+			var solveBackItem = solveFunc(solveRightItem.GoalState.MakeTurn(TurnTo.Left));
+			var solveLeftItem = solveFunc(solveBackItem.GoalState.MakeTurn(TurnTo.Left));
 
 			return new SolutionItem
 			{
-				Actions = searcher.Path,
-				GoalState = searcher.GoalState
+				Actions = solveFrontItem.Actions
+					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
+					.Concat(solveRightItem.Actions)
+					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
+					.Concat(solveBackItem.Actions)
+					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
+					.Concat(solveLeftItem.Actions)
+					.ToList(),
+				GoalState = solveLeftItem.GoalState
 			};
 		}
 
 		private static SolutionItem FindAndMoveToPointIfNeed(
 			RubikCube cube, 
-			bool isNotNeedMovement, 
+			bool isCellOnPoint, 
 			Func<RubikCube, SolutionItem> moveToPoint)
 		{
-			return isNotNeedMovement ? GetEmptySolution(cube) : moveToPoint(cube);
+			return isCellOnPoint 
+				? GetEmptySolution(cube) 
+				: moveToPoint(cube);
 		}
 
 		private static SolutionItem GetEmptySolution(RubikCube cube)
@@ -53,26 +65,16 @@ namespace MagicCube.CubeSolution
 			};
 		}
 
-        private static SolutionItem SolveFourSides(RubikCube cube, Func<RubikCube, SolutionItem> solveFunc)
-        {
-            var solveFrontItem = solveFunc(cube);
-            var solveRightItem = solveFunc(solveFrontItem.GoalState.MakeTurn(TurnTo.Left));
-            var solveBackItem = solveFunc(solveRightItem.GoalState.MakeTurn(TurnTo.Left));
-            var solveLeftItem = solveFunc(solveBackItem.GoalState.MakeTurn(TurnTo.Left));
+		private static SolutionItem FindSolution(RubikCube cube, CubeCommand[] commands, Func<RubikCube, bool> condition)
+		{
+			var searcher = new PathSearhcer(cube, commands, condition);
 
-            return new SolutionItem
-            {
-                Actions = solveFrontItem.Actions
-                    .Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
-                    .Concat(solveRightItem.Actions)
-                    .Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
-                    .Concat(solveBackItem.Actions)
-                    .Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
-                    .Concat(solveLeftItem.Actions)
-                    .ToList(),
-                GoalState = solveLeftItem.GoalState
-            };
-        }
+			return new SolutionItem
+			{
+				Actions = searcher.Path,
+				GoalState = searcher.GoalState
+			};
+		}
 
 		#region UpperLayerSolution
 
@@ -247,6 +249,50 @@ namespace MagicCube.CubeSolution
 					AlgorithmBase.MoveIncorrectOrientedMiddleMiddleToPoint,
 				},
 				AlgorithmBase.IsMiddleMiddleOnPoint);
+		}
+
+		#endregion
+
+		#region LowerCrossSolution
+
+		public SolutionItem SolveLowerCross(RubikCube cube)
+		{
+			var moveToStartItem = MoveLowerCrossToStart(cube);
+			var moveToPointItem = MoveLowerCrossToPoint(moveToStartItem.GoalState);
+
+			return new SolutionItem
+			{
+				Actions = moveToStartItem.Actions.Concat(moveToPointItem.Actions).ToList(),
+				GoalState = moveToPointItem.GoalState
+			};
+		}
+
+		public SolutionItem MoveLowerCrossToStart(RubikCube cube)
+		{
+			return FindSolution(
+				cube,
+				new[]
+				{
+					CommandFactory.GetRotation(TurnTo.Left, Layer.First),
+					CommandFactory.GetRotation(TurnTo.Right, Layer.First),
+					CommandFactory.GetTurn(TurnTo.Left),
+					CommandFactory.GetTurn(TurnTo.Right),
+					AlgorithmBase.ReplaceLowerLayerMiddles
+				},
+				AlgorithmBase.IsLowerCrossOnStart);
+		}
+
+		public SolutionItem MoveLowerCrossToPoint(RubikCube cube)
+		{
+			return FindSolution(
+				cube,
+				new[]
+				{
+					CommandFactory.GetRotation(TurnTo.Left, Layer.First),
+					CommandFactory.GetRotation(TurnTo.Right, Layer.First),
+					AlgorithmBase.ReorientateLowerMiddle
+				},
+				AlgorithmBase.IsSolvedLowerCross);
 		}
 
 		#endregion
