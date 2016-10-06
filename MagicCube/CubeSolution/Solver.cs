@@ -4,8 +4,6 @@ using System.Linq;
 using MagicCube.Movement;
 using MagicCube.PathSearch;
 
-using CubeAction = System.Func<MagicCube.RubikCube, MagicCube.RubikCube>;
-
 namespace MagicCube.CubeSolution
 {
 	public class Solver
@@ -293,6 +291,38 @@ namespace MagicCube.CubeSolution
 					AlgorithmBase.ReorientateLowerMiddle
 				},
 				AlgorithmBase.IsSolvedLowerCross);
+		}
+
+		#endregion
+
+		#region LowerCornersSolution
+
+		public SolutionItem MoveLowerCornersToStart(RubikCube cube)
+		{
+			return FindSolution(
+				cube,
+				new[]
+				{
+					CommandFactory.GetRotation(TurnTo.Left, Layer.First),
+					CommandFactory.GetRotation(TurnTo.Right, Layer.First),
+					AlgorithmBase.ReorientateLowerCornersByLeft,
+					AlgorithmBase.ReorientateLowerCornersByRight,
+				},
+				AlgorithmBase.IsAllLowerCornersOnStart);
+		}
+
+		public SolutionItem MoveLowerCornersToPoint(RubikCube cube)
+		{
+			return FindSolution(
+				cube,
+				new[]
+				{
+					CommandFactory.GetRotation(TurnTo.Left, Layer.First),
+					CommandFactory.GetRotation(TurnTo.Right, Layer.First),
+					AlgorithmBase.RotateLowerCornerByLeft,
+					AlgorithmBase.RotateLowerCornerByRight,
+				},
+				AlgorithmBase.IsAllLowerCornersOnPoint);
 		}
 
 		#endregion

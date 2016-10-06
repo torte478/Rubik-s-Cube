@@ -374,6 +374,58 @@ namespace Tests.CubeSolution
 			Assert.That(AlgorithmBase.IsSolvedLowerCross(solution.GoalState), Is.True);
 		}
 
+		[Test]
+		public void ReturnCorrectActions_ForLowerCrossSolution()
+		{
+			var testCube = GetCubeWithTwoSolvedLayers();
+
+			var solution = solver.SolveLowerCross(testCube);
+
+			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
+			Assert.That(AlgorithmBase.IsSolvedLowerCross(testCube), Is.True);
+		}
+
+		#endregion
+
+		#region LowerCornersSolutionTests
+
+		[Test]
+		public void ReturnStartState_WhenLowerCornersOnStart()
+		{
+			cube = cube.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up)
+				.SetColor(SideIndex.Back, 1, 2, CellColor.Red)
+				.SetColor(SideIndex.Left, 1, 2, CellColor.Yellow)
+				.SetColor(SideIndex.Top, 2, 2, CellColor.Blue)
+				.SetColor(SideIndex.Top, 1, 1, CellColor.Red)
+				.SetColor(SideIndex.Back, 1, 3, CellColor.Blue)
+				.SetColor(SideIndex.Left, 1, 1, CellColor.Yellow);
+
+			var solution = solver.MoveLowerCornersToStart(cube);
+
+			Assert.That(solution.Actions.Count, Is.EqualTo(0));
+		}
+
+		[Test]
+		public void MoveLowerCorners_ToStart()
+		{
+			var solution = solver.MoveLowerCornersToStart(
+				solver.SolveLowerCross(GetCubeWithTwoSolvedLayers()).GoalState);
+
+			Assert.That(AlgorithmBase.IsAllLowerCornersOnStart(solution.GoalState), Is.True);
+		}
+
+		[Test]
+		public void MoveLowerCorners_ToPoint()
+		{
+			var solution = solver.MoveLowerCornersToPoint(
+				solver.MoveLowerCornersToStart(
+				   solver.SolveLowerCross(GetCubeWithTwoSolvedLayers())
+				   .GoalState)
+				.GoalState);
+
+			Assert.That(AlgorithmBase.IsAllLowerCornersOnPoint(solution.GoalState), Is.True);
+		}
+
 		#endregion
 	}
 }

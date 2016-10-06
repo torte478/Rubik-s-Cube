@@ -277,5 +277,95 @@ namespace MagicCube.CubeSolution
 		});
 
 		#endregion
+
+		#region LowerCornersSolution
+
+		public static bool IsAllLowerCornersOnStart(RubikCube cube)
+		{
+			return IsLowerCornerOnStart(cube)
+				   && IsLowerCornerOnStart(cube.MakeTurn(TurnTo.Left))
+				   && IsLowerCornerOnStart(cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Left))
+				   && IsLowerCornerOnStart(cube.MakeTurn(TurnTo.Right));
+		}
+
+		private static bool IsLowerCornerOnStart(RubikCube cube)
+		{
+			var availableColors = new[]
+			{
+				cube[SideIndex.Left].GetColor(1, 2),
+				cube[SideIndex.Back].GetColor(1, 2),
+				cube[SideIndex.Top].GetCenterColor()
+			};
+
+			return availableColors.Contains(cube[SideIndex.Top].GetColor(1, 1))
+				&& availableColors.Contains(cube[SideIndex.Left].GetColor(1, 1))
+				&& availableColors.Contains(cube[SideIndex.Back].GetColor(1, 3));
+		}
+
+		public static CubeCommand ReorientateLowerCornersByRight = new CubeCommand(new CubeAction[]
+		{
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.First),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.First),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right)
+		});
+
+		public static CubeCommand ReorientateLowerCornersByLeft = new CubeCommand(new CubeAction[]
+		{
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.First),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.First),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+		});
+
+		private static bool IsLowerCornerOnPoint(RubikCube cube)
+		{
+			return cube[SideIndex.Front].GetColor(1, 3) == cube[SideIndex.Front].GetCenterColor()
+			       && cube[SideIndex.Top].GetColor(3, 3) == cube[SideIndex.Top].GetCenterColor()
+			       && cube[SideIndex.Right].GetColor(1, 1) == cube[SideIndex.Right].GetCenterColor();
+		}
+
+		public static bool IsAllLowerCornersOnPoint(RubikCube cube)
+		{
+			return IsLowerCornerOnPoint(cube)
+			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Left))
+			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Left))
+			       && IsLowerCornerOnPoint(cube.MakeTurn(TurnTo.Right))
+				   ;
+		}
+
+		public static CubeCommand RotateLowerCornerByRight = new CubeCommand(new CubeAction[]
+		{
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+		});
+
+		public static CubeCommand RotateLowerCornerByLeft = new CubeCommand(new CubeAction[]
+		{
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Left),
+			cube => cube.MakeRotation(TurnTo.Up, Layer.Third),
+			cube => cube.MakeClockwiseRotation(TurnTo.Right),
+			cube => cube.MakeRotation(TurnTo.Down, Layer.Third),
+		});
+
+		#endregion
 	}
 }
