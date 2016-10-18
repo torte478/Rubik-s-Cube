@@ -174,8 +174,7 @@ namespace UserInterface
                 MessageBox.Show(@"Кубик собран!");
                 return;
             }
-            ChangeCube(cubeAPI.States[currentStateIndex]);
-            UpdateLabels();
+            UpdateCubeImage();
         }
 
         private void pictureBox22_Click(object sender, EventArgs e)
@@ -184,10 +183,26 @@ namespace UserInterface
         }
 
         private void metroTrackBar1_Scroll(object sender, ScrollEventArgs e)
+        { 
+            timer1.Interval = metroTrackBar1.Maximum + metroTrackBar1.Minimum - metroTrackBar1.Value;
+        }
+
+        private void pictureBox23_Click(object sender, EventArgs e)
         {
-            timer1.Enabled = false;
-            timer1.Interval = metroTrackBar1.Value;
-            timer1.Enabled = true;
+            currentStateIndex = Math.Min(currentStateIndex + 1, cubeAPI.States.Length);
+            UpdateCubeImage();
+        }
+
+        private void pictureBox21_Click(object sender, EventArgs e)
+        {
+            currentStateIndex = Math.Max(currentStateIndex - 1, 0);
+            UpdateCubeImage();
+        }
+
+        private void UpdateCubeImage()
+        {
+            ChangeCube(cubeAPI.States[currentStateIndex]);
+            UpdateLabels();
         }
     }
 }

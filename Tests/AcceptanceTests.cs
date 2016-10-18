@@ -21,6 +21,7 @@ namespace Tests
 		}
 
 		[Test]
+        [Ignore("very long test")]
 		public void AcceptanceTest()
 		{
 			for (var i = 0; i < accptanceTestsCount; ++i)

@@ -53,6 +53,7 @@
             this.pictureBox20 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this.metroTrackBar1 = new MetroFramework.Controls.MetroTrackBar();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.pictureBox23 = new System.Windows.Forms.PictureBox();
@@ -62,7 +63,6 @@
             this.metroButton3 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
-            this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.canvasPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -335,11 +335,20 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Сборка кубика";
             // 
+            // metroLabel3
+            // 
+            this.metroLabel3.AutoSize = true;
+            this.metroLabel3.Location = new System.Drawing.Point(18, 110);
+            this.metroLabel3.Name = "metroLabel3";
+            this.metroLabel3.Size = new System.Drawing.Size(73, 19);
+            this.metroLabel3.TabIndex = 9;
+            this.metroLabel3.Text = "Шаг 0 из 0";
+            // 
             // metroTrackBar1
             // 
             this.metroTrackBar1.BackColor = System.Drawing.Color.Transparent;
             this.metroTrackBar1.Location = new System.Drawing.Point(18, 253);
-            this.metroTrackBar1.Maximum = 5000;
+            this.metroTrackBar1.Maximum = 1000;
             this.metroTrackBar1.Minimum = 10;
             this.metroTrackBar1.Name = "metroTrackBar1";
             this.metroTrackBar1.Size = new System.Drawing.Size(251, 30);
@@ -365,6 +374,7 @@
             this.pictureBox23.Size = new System.Drawing.Size(40, 40);
             this.pictureBox23.TabIndex = 6;
             this.pictureBox23.TabStop = false;
+            this.pictureBox23.Click += new System.EventHandler(this.pictureBox23_Click);
             // 
             // pictureBox22
             // 
@@ -384,6 +394,7 @@
             this.pictureBox21.Size = new System.Drawing.Size(40, 40);
             this.pictureBox21.TabIndex = 4;
             this.pictureBox21.TabStop = false;
+            this.pictureBox21.Click += new System.EventHandler(this.pictureBox21_Click);
             // 
             // metroLabel1
             // 
@@ -420,15 +431,6 @@
             this.metroButton1.TabIndex = 0;
             this.metroButton1.Text = "Случайный кубик";
             this.metroButton1.Click += new System.EventHandler(this.metroButton1_Click);
-            // 
-            // metroLabel3
-            // 
-            this.metroLabel3.AutoSize = true;
-            this.metroLabel3.Location = new System.Drawing.Point(18, 110);
-            this.metroLabel3.Name = "metroLabel3";
-            this.metroLabel3.Size = new System.Drawing.Size(73, 19);
-            this.metroLabel3.TabIndex = 9;
-            this.metroLabel3.Text = "Шаг 0 из 0";
             // 
             // timer1
             // 
