@@ -15,8 +15,10 @@ namespace MagicCube.CubeSolution
 			var solveBackItem = solveFunc(solveRightItem.GoalState.MakeTurn(TurnTo.Left));
 			var solveLeftItem = solveFunc(solveBackItem.GoalState.MakeTurn(TurnTo.Left));
 
-			return new SolutionItem
-			{
+            var items = new[] { solveFrontItem, solveLeftItem, solveBackItem, solveRightItem };
+
+            return new SolutionItem
+            {
 				Actions = solveFrontItem.Actions
 					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
 					.Concat(solveRightItem.Actions)
@@ -25,8 +27,10 @@ namespace MagicCube.CubeSolution
 					.Concat(new[] { CommandFactory.GetTurn(TurnTo.Left) })
 					.Concat(solveLeftItem.Actions)
 					.ToList(),
-				GoalState = solveLeftItem.GoalState
-			};
+				GoalState = solveLeftItem.GoalState,
+                MaxRecursionDeep = items.Select(item => item.MaxRecursionDeep).Max(),
+                MaxHandledElementsCount = items.Select(item => item.MaxHandledElementsCount).Max()
+            };
 		}
 
 		private static SolutionItem FindAndMoveToPointIfNeed(
@@ -59,8 +63,14 @@ namespace MagicCube.CubeSolution
 			return new SolutionItem
 			{
 				Actions = moveToStartItem.Actions.Concat(moveToPointItem.Actions).ToList(),
-				GoalState = moveToPointItem.GoalState
-			};
+				GoalState = moveToPointItem.GoalState,
+                MaxRecursionDeep = Math.Max(
+                    moveToStartItem.MaxRecursionDeep, 
+                    moveToPointItem.MaxRecursionDeep),
+                MaxHandledElementsCount = Math.Max(
+                    moveToStartItem.MaxHandledElementsCount, 
+                    moveToPointItem.MaxHandledElementsCount)
+            };
 		}
 
 		private static SolutionItem FindSolution(RubikCube cube, CubeCommand[] commands, Func<RubikCube, bool> condition)
@@ -70,7 +80,9 @@ namespace MagicCube.CubeSolution
 			return new SolutionItem
 			{
 				Actions = searcher.Path,
-				GoalState = searcher.GoalState
+				GoalState = searcher.GoalState,
+                MaxRecursionDeep = searcher.Path.Count,
+                MaxHandledElementsCount = searcher.HandledStates.Count
 			};
 		}
 
@@ -84,8 +96,10 @@ namespace MagicCube.CubeSolution
 			return new SolutionItem
 			{
 				Actions = solveCross.Actions.Concat(solveCorners.Actions).ToList(),
-				GoalState = solveCorners.GoalState
-			};
+				GoalState = solveCorners.GoalState,
+                MaxRecursionDeep = Math.Max(solveCross.MaxRecursionDeep, solveCorners.MaxRecursionDeep),
+                MaxHandledElementsCount = Math.Max(solveCross.MaxHandledElementsCount, solveCorners.MaxHandledElementsCount),
+            };
 		}
 
 		#region UpperCrossSolution
@@ -256,13 +270,17 @@ namespace MagicCube.CubeSolution
 			var moveToStartItem = MoveLowerCornersToStart(solveCrossItem.GoalState);
 			var moveToPointItem = MoveLowerCornersToPoint(moveToStartItem.GoalState);
 
+		    var items = new[] {solveCrossItem, moveToStartItem, moveToPointItem};
+
 			return new SolutionItem
 			{
 				Actions = solveCrossItem.Actions
 					.Concat(moveToStartItem.Actions)
 					.Concat(moveToPointItem.Actions)
 					.ToList(),
-				GoalState = moveToPointItem.GoalState
+				GoalState = moveToPointItem.GoalState,
+                MaxRecursionDeep = items.Select(item => item.MaxRecursionDeep).Max(),
+                MaxHandledElementsCount = items.Select(item => item.MaxHandledElementsCount).Max()
 			};
 		}
 
@@ -276,7 +294,9 @@ namespace MagicCube.CubeSolution
 			return new SolutionItem
 			{
 				Actions = moveToStartItem.Actions.Concat(moveToPointItem.Actions).ToList(),
-				GoalState = moveToPointItem.GoalState
+				GoalState = moveToPointItem.GoalState,
+                MaxRecursionDeep = Math.Max(moveToStartItem.MaxRecursionDeep, moveToPointItem.MaxRecursionDeep),
+                MaxHandledElementsCount = Math.Max(moveToStartItem.MaxHandledElementsCount, moveToPointItem.MaxHandledElementsCount),
 			};
 		}
 
@@ -350,6 +370,8 @@ namespace MagicCube.CubeSolution
 			var solveMiddleLayer = SolveMiddleLayer(solveUpperLayer.GoalState);
 			var solveLowerLayer = SolveLowerLayer(solveMiddleLayer.GoalState.MakeTurn(TurnTo.Up).MakeTurn(TurnTo.Up));
 
+		    var items = new[] {solveUpperLayer, solveMiddleLayer, solveLowerLayer};
+
 			return new SolutionItem
 			{
 				Actions = solveUpperLayer.Actions
@@ -361,7 +383,9 @@ namespace MagicCube.CubeSolution
 					})
 					.Concat(solveLowerLayer.Actions)
 					.ToList(),
-				GoalState = solveLowerLayer.GoalState
+				GoalState = solveLowerLayer.GoalState,
+                MaxRecursionDeep = items.Select(item => item.MaxRecursionDeep).Max(),
+                MaxHandledElementsCount = items.Select(item => item.MaxHandledElementsCount).Max(),
 			};
 		}
 	}

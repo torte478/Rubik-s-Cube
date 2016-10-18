@@ -494,5 +494,25 @@ namespace Tests.CubeSolution
 			testCube = solution.Actions.Aggregate(testCube, (current, solutionAction) => solutionAction.Execute(current));
 			Assert.That(AlgorithmBase.IsSolvedCube(testCube), Is.True);
 		}
+
+	    [Test]
+	    public void ReturnNotZeroDeep_FromSolveCube()
+	    {
+            var testCube = TestHelper.GetCompleteCube().MakeRotation(TurnTo.Right, Layer.First);
+
+            var solution = solver.SolveCube(testCube);
+
+            Assert.That(solution.MaxRecursionDeep, Is.Not.EqualTo(0));
+	    }
+
+	    [Test]
+	    public void ReturnNotZeroHandledElementsCount_FromSolveCube()
+	    {
+	        var testCube = TestHelper.GetCompleteCube().MakeRotation(TurnTo.Right, Layer.First);
+
+	        var solution = solver.SolveCube(testCube);
+
+            Assert.That(solution.MaxHandledElementsCount, Is.Not.EqualTo(0));
+	    }
 	}
 }
