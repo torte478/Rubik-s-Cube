@@ -83,34 +83,85 @@ namespace MagicCube
             return rotationCount;
         }
 
-        private static bool IsEqualCubes(RubikCube state, RubikCube nextState)
+        public static bool IsEqualCubes(RubikCube cube, RubikCube otherCube)
         {
-            var movementState = nextState.MakeTurn(TurnTo.Right);
-            for (var i = 0; i < 4; ++i)
-                if (HasEqialOrientation(state, movementState) == false)
-                {
-                    movementState = movementState.MakeTurn(TurnTo.Left);
-                }
-            for (var i = 0; i < 4; ++i)
-                if (HasEqialOrientation(state, movementState) == false)
-                {
-                    movementState = movementState.MakeTurn(TurnTo.Up);
-                }
+            var tempCube = OrientateToCube(cube, otherCube);
+            return HaveEqualCells(cube, tempCube);
+        }
 
-            for (var i = 0; i < 6; ++i)
-                for (var j = 0; j < 9; ++j)
+        private static RubikCube OrientateToCube(RubikCube goalCube, RubikCube cube)
+        {
+            var tempCube = OrientateTopToCorrectSide(goalCube, cube);
+
+            while (HasFrontOnCorrectSide(goalCube, tempCube) == false)
+            {
+                tempCube = tempCube.MakeTurn(TurnTo.Right);
+            }
+
+            return tempCube;
+        }
+
+        private static RubikCube OrientateTopToCorrectSide(RubikCube goalCube, RubikCube cube)
+        {
+            var tempCube = cube.MakeTurn(TurnTo.Left).MakeTurn(TurnTo.Right);
+
+            if (HasTopSideOnTopOfDown(goalCube, tempCube) == false)
+            {
+                while (HasCorrectOrientedTopSide(goalCube, tempCube) == false)
                 {
-                    if (state[(SideIndex) i].Colors[j] != movementState[(SideIndex) i].Colors[j])
+                    tempCube = tempCube.MakeTurn(TurnTo.Right);
+                }
+            }
+
+            while (HasTopOnCorrectSide(goalCube, tempCube) == false)
+            {
+                tempCube = tempCube.MakeTurn(TurnTo.Up);
+            }
+
+            return tempCube;
+        }
+
+        private static bool HasFrontOnCorrectSide(RubikCube goalCube, RubikCube tempCube)
+        {
+            return tempCube[SideIndex.Front].GetCenterColor() == goalCube[SideIndex.Front].GetCenterColor();
+        }
+
+        private static bool HasTopOnCorrectSide(RubikCube goalCube, RubikCube tempCube)
+        {
+            return tempCube[SideIndex.Top].GetCenterColor() == goalCube[SideIndex.Top].GetCenterColor();
+        }
+
+        private static bool HasCorrectOrientedTopSide(RubikCube goalCube, RubikCube tempCube)
+        {
+            return tempCube[SideIndex.Front].GetCenterColor() == goalCube[SideIndex.Top].GetCenterColor();
+        }
+
+        private static bool HasTopSideOnTopOfDown(RubikCube goalCube, RubikCube tempCube)
+        {
+            return tempCube[SideIndex.Top].GetCenterColor() == goalCube[SideIndex.Top].GetCenterColor()
+                   || tempCube[SideIndex.Down].GetCenterColor() == goalCube[SideIndex.Down].GetCenterColor();
+        }
+
+        private static bool HaveEqualCells(RubikCube cube, RubikCube otherCube)
+        {
+            for (var side = 0; side < 6; ++side)
+                for (var cell = 0; cell < 9; ++cell)
+                {
+                    if (IsEqualCellColors(cube, otherCube, side, cell) == false)
                         return false;
                 }
 
             return true;
         }
 
-        private static bool HasEqialOrientation(RubikCube state, RubikCube movementCube)
+        private static bool IsEqualCellColors(
+            RubikCube cube, 
+            RubikCube otherCube, 
+            int side, 
+            int cell)
         {
-            return movementCube[SideIndex.Front].GetCenterColor() == state[SideIndex.Front].GetCenterColor()
-                   && movementCube[SideIndex.Top].GetCenterColor() == state[SideIndex.Top].GetCenterColor();
+            var sideIndex = (SideIndex) side;
+            return cube[sideIndex][cell] == otherCube[sideIndex][cell];
         }
     }
 }

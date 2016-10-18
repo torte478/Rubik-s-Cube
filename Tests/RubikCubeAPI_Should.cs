@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MagicCube;
 using MagicCube.CubeSolution;
+using MagicCube.Movement;
 using NUnit.Framework;
 
 namespace Tests
@@ -78,7 +79,7 @@ namespace Tests
         [Test]
         public void HaveRotationCount_AfterSolving()
         {
-            cubeAPI.SolveCube(TestHelper.GetCompleteCube());
+            cubeAPI.SolveCube(TestHelper.GetCompleteCube().MakeRotation(TurnTo.Right, Layer.First));
 
             Assert.That(cubeAPI.RotationCount, Is.Not.EqualTo(0));
         }
@@ -103,6 +104,50 @@ namespace Tests
             cubeAPI.SolveCube(TestHelper.GetCompleteCube());
 
             Assert.That(cubeAPI.RotationCount, Is.LessThan(cubeAPI.Actions.Length));
+        }
+
+        [Test]
+        public void ReturnTrue_ForOneCube()
+        {
+            var cube = TestHelper.GetCompleteCube();
+
+            Assert.That(RubikCubeAPI.IsEqualCubes(cube, cube), Is.True);
+        }
+
+        [Test]
+        public void ReturnTrue_ForTurnedCube()
+        {
+            var cube = TestHelper.GetCompleteCube();
+            var nextCube = cube.MakeTurn(TurnTo.Right);
+
+            Assert.That(RubikCubeAPI.IsEqualCubes(cube, nextCube), Is.True);
+        }
+
+        [Test]
+        public void ReturnTrue_ForTurnedToCornerCube()
+        {
+            var cube = TestHelper.GetCompleteCube();
+            var nextCube = cube.MakeTurnToCorner(TurnTo.Left);
+
+            Assert.That(RubikCubeAPI.IsEqualCubes(cube, nextCube));
+        }
+
+        [Test]
+        public void ReturnFalse_ForCubeAfterRotation()
+        {
+            var cube = TestHelper.GetCompleteCube();
+            var nextCube = cube.MakeRotation(TurnTo.Up, Layer.Second);
+
+            Assert.That(RubikCubeAPI.IsEqualCubes(cube, nextCube), Is.False);
+        }
+
+        [Test]
+        public void ReturnFalse_ForCubeAfterCloclwseRotation()
+        {
+            var cube = TestHelper.GetCompleteCube();
+            var nextCube = cube.MakeClockwiseRotation(TurnTo.Right);
+
+            Assert.That(RubikCubeAPI.IsEqualCubes(cube, nextCube), Is.False);
         }
     }
 }

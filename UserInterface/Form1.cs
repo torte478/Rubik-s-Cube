@@ -144,11 +144,11 @@ namespace UserInterface
 
         private void metroButton3_Click(object sender, EventArgs e)
         {
-            metroLabel3.Text = @"Выполняется поиск...";
-            
-            //TODO: make a pause
-
-            if (cubeAPI.SolveCube(startCube) == false)
+            if (cubeAPI.SolveCube(startCube))
+            {
+                MessageBox.Show(@"Решение найдено!");
+            }
+            else
             {
                 File.WriteAllText("error log.txt", startCube.ToString());
                 MessageBox.Show(@"Произошла неизвестная ошибка! Попробуйте другую конфигурацию кубика");
